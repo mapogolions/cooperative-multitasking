@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Mapogolions\Coroutines;
 
-
 class GetTid extends SystemCall
 {
   public function handle(Task $task, Scheduler $scheduler): void

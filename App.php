@@ -11,8 +11,8 @@ function foo() {
     echo "I'm foo " . $tid . PHP_EOL;
     yield;
   }
-  $child = yield new NewTask(bar());
-  echo "New task $child is created" . PHP_EOL;
+  $tidChild = yield new NewTask(bar());
+  echo "New task $tidChild is created" . PHP_EOL;
 }
 
 function bar() {
@@ -25,5 +25,5 @@ function bar() {
 
 
 $sched = new Scheduler();
-$sched->register(foo());
+$sched->spawn(foo());
 $sched->loop();

@@ -5,16 +5,16 @@ namespace Mapogolions\Coroutines;
 
 class NewTask extends SystemCall
 {
-  private $generator;
+  private $suspendable;
 
-  public function __construct($generator)
+  public function __construct($suspendable)
   {
-    $this->generator = $generator;
+    $this->suspendable = $suspendable;
   }
 
   public function handle(Task $task, Scheduler $scheduler): void
   {
-    $tid = $scheduler->register($this->generator);
+    $tid = $scheduler->spawn($this->suspendable);
     $task->send($tid);
     $scheduler->schedule($task);
   }

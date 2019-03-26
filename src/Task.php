@@ -7,23 +7,18 @@ class Task
 {
   private static $total;
   private $id;
-  private $coroutine;
+  private $suspendable;
   
-  public function __construct($coroutine)
+  public function __construct($suspendable)
   {
     $this->id = ++self::$total;
-    $this->coroutine = $coroutine;
+    $this->suspendable = $suspendable;
     $this->value = null;
   }
   
   public function tid()
   {
     return $this->id;
-  }
-
-  public function suspendable()
-  {
-    return $this->coroutine;
   }
 
   public function message()
@@ -33,23 +28,23 @@ class Task
 
   public function valid(): bool
   {
-    return $this->coroutine->valid();
+    return $this->suspendable->valid();
   }
 
   public function current()
   {
-    return $this->coroutine->current();
+    return $this->suspendable->current();
   }
 
   public function next()
   {
-    $this->coroutine->next();
+    $this->suspendable->next();
   }
 
   public function send($value): void
   {
     $this->value = $value;
-    $this->coroutine->send($this->value);  
+    $this->suspendable->send($this->value);  
   }
 }
 

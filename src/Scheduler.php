@@ -14,7 +14,7 @@ class Scheduler
     $this->tasks = [];
   }
 
-  public function register($coroutine): int
+  public function spawn($coroutine): int
   {
     $task = new Task($coroutine);
     $this->tasks[$task->tid()] = $task;
@@ -27,7 +27,7 @@ class Scheduler
     $this->ready->enqueue($task);
   }
 
-  public function exit(Task $task): void
+  public function kill(Task $task): void
   {
     echo "Task {$task->tid()} is terminated" . PHP_EOL;
     unset($this->tasks[$task->tid()]);
@@ -38,7 +38,7 @@ class Scheduler
     while (count($this->tasks) > 0) {
       $task = $this->ready->dequeue();
       if (!$task->valid()) {
-        $this->exit($task);
+        $this->kill($task);
         continue;
       }
       $result = $task->current();
