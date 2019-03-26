@@ -1,0 +1,18 @@
+{
+    "name": "tom/base",
+    "authors": [
+        {
+            "name": "Pavel Ivanov",
+            "email": "ivanovpavelalex45@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Mapogolions\\Coroutines\\": "src/"    
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8"
+    }
+}
