@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Mapogolions\Suspendable;
 
+use Mapogolions\Suspendable\System\SystemCall;
+
 class Scheduler
 {
   private $ready;
@@ -24,7 +26,7 @@ class Scheduler
     return $this->tasks;
   }
 
-  public function spawn($suspendable): int
+  public function spawn(\Generator $suspendable)
   {
     $task = new Task($suspendable);
     $this->tasks[$task->tid()] = $task;
@@ -32,23 +34,23 @@ class Scheduler
     return $task->tid();
   }
 
-  public function schedule(Task $task): void
+  public function schedule(Task $task)
   {
     $this->ready->enqueue($task);
   }
 
-  public function kill(Task $task): void
+  public function kill(Task $task)
   {
     echo "Task {$task->tid()} is terminated" . PHP_EOL;
     unset($this->tasks[$task->tid()]);
   }
 
-  public function loop()
+  public function launch()
   {
     while (count($this->tasks) > 0) {
       $task = $this->ready->dequeue();
       try {
-        $value = $task->launch();
+        $value = $task->run();
         if ($value instanceof SystemCall) {
           $value->handle($task, $this);
           continue;

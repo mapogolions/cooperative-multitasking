@@ -4,8 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . "/vendor/autoload.php";
 
 use Mapogolions\Suspendable\Scheduler;
-use Mapogolions\Suspendable\{ GetTid, NewTask, KillTask };
-
+use Mapogolions\Suspendable\System\{ GetTid, NewTask, KillTask };
 
 function foo() {
   $tid = yield new GetTid();
@@ -16,7 +15,6 @@ function foo() {
   $child = yield new NewTask(bar());
   echo "New task $child is created " . PHP_EOL;
 }
-
 
 function bar() {
   $tid = yield new GetTid();
@@ -42,11 +40,12 @@ function spam() {
 function infinite_loop() {
   $tid = yield new GetTid();
   while (true) {
-    echo "I' am infinite loop " . $tid . PHP_EOL;
+    echo "I' m infinite loop " . $tid . PHP_EOL;
     yield;
   }
 }
 
 $sched = new Scheduler();
-$sched->spawn(foo());
-$sched->loop();
+$gen = foo();
+$sched->spawn($gen);
+$sched->launch();

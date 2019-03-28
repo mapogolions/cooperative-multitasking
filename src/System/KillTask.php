@@ -1,7 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Mapogolions\Suspendable;
+namespace Mapogolions\Suspendable\System;
+
+use Mapogolions\Suspendable\{ Task, Scheduler, StopIteration };
 
 class KillTask extends SystemCall
 {

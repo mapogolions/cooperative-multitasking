@@ -3,19 +3,17 @@ declare(strict_types=1);
 
 namespace Mapogolions\Suspendable;
 
-use Mapogolions\Suspendable\StopIteration;
-
 class Task
 {
-  private static $total;
+  private static $taskCount;
   private $id;
   private $suspendable;
   private $value = null;
   private $untracked = true;
 
-  public function __construct($suspendable)
+  public function __construct(\Generator $suspendable)
   {
-    $this->id = ++self::$total;
+    $this->id = ++self::$taskCount;
     $this->suspendable = $suspendable;
   }
   
@@ -33,7 +31,7 @@ class Task
     $this->value = $value;
   }
 
-  public function launch()
+  public function run()
   {
     if ($this->untracked) {
       $this->untracked = false;
