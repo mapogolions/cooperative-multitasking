@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Mapogolions\Coroutines;
+namespace Mapogolions\Suspendable;
 
 class Scheduler
 {
@@ -14,9 +14,19 @@ class Scheduler
     $this->tasks = [];
   }
 
-  public function spawn($coroutine): int
+  public function queue()
   {
-    $task = new Task($coroutine);
+    return $this->ready;
+  }
+
+  public function pool()
+  {
+    return $this->tasks;
+  }
+
+  public function spawn($suspendable): int
+  {
+    $task = new Task($suspendable);
     $this->tasks[$task->tid()] = $task;
     $this->schedule($task);
     return $task->tid();
@@ -37,17 +47,16 @@ class Scheduler
   {
     while (count($this->tasks) > 0) {
       $task = $this->ready->dequeue();
-      if (!$task->valid()) {
+      try {
+        $value = $task->launch();
+        if ($value instanceof SystemCall) {
+          $value->handle($task, $this);
+          continue;
+        }
+        $this->schedule($task);
+      } catch (StopIteration $e) {
         $this->kill($task);
-        continue;
       }
-      $result = $task->current();
-      if ($result instanceof SystemCall) {
-        $result->handle($task, $this);
-        continue;
-      }
-      $task->next();
-      $this->schedule($task);
     }
   }
 }

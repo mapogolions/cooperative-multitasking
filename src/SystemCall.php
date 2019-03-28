@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Mapogolions\Coroutines;
+namespace Mapogolions\Suspendable;
 
 abstract class SystemCall
 {

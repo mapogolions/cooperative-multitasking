@@ -9,7 +9,7 @@
     "require": {},
     "autoload": {
         "psr-4": {
-            "Mapogolions\\Coroutines\\": "src/"    
+            "Mapogolions\\Suspendable\\": "src/"    
         }
     },
     "require-dev": {

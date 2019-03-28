@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Mapogolions\Coroutines;
+namespace Mapogolions\Suspendable;
 
 class NewTask extends SystemCall
 {
@@ -15,7 +15,7 @@ class NewTask extends SystemCall
   public function handle(Task $task, Scheduler $scheduler): void
   {
     $tid = $scheduler->spawn($this->suspendable);
-    $task->send($tid);
+    $task->setValue($tid);
     $scheduler->schedule($task);
   }
 }
