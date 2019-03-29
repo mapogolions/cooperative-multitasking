@@ -45,7 +45,5 @@ function infinite_loop() {
   }
 }
 
-$sched = new Scheduler();
-$gen = foo();
-$sched->spawn($gen);
-$sched->launch();
+$pl = Scheduler::of(foo());
+$pl->launch();
