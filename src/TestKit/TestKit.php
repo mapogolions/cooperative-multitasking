@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Mapogolions\Suspendable\TestKit;
 
 use Mapogolions\Suspendable\TestKit\Spy;
+use Mapogolions\Suspendable\System\SystemCall;
 
 class TestKit
 {
@@ -22,15 +23,35 @@ class TestKit
     }
   }
 
-  public static function track(\Generator $suspendable, Spy $spy): \Generator
+  public static function trackedAsDataProducer(\Generator $suspendable, Spy $spy, callable $predicate=null)
   {
-    $items = self::arrayOfSuspendable($suspendable);
-    return (function () use ($items, $spy) {
-      foreach ($items as $item) {
+    $predicate = $predicate ?? function ($value) { return true; };
+    while ($suspendable->valid()) {
+      $data = $suspendable->current();
+      if ($predicate($data)) {
+        $spy->apply($data);
+      }
+      $result = yield $data;
+      $suspendable->send($result);
+    }
+  }
+
+  public static function trackedAsDataConsumer(\Generator $suspendable, Spy $spy, callable $predicate=null)
+  {
+    $predicate = $predicate ?? function ($value) { return true; };
+    while ($suspendable->valid()) {
+      $item = yield $suspendable->current();
+      if ($predicate($item)) {
         $spy->apply($item);
-        yield $item;
-      };
-    })();
+      }
+      $suspendable->send($item);
+    }
+  }
+
+  public static function ignoreSystemCalls() {
+    return function ($value) {
+      return $value instanceof SystemCall ? false : true;
+    };
   }
 
   public static function arrayOfSuspendable(\Generator $suspendable): array
