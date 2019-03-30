@@ -5,15 +5,14 @@ namespace Mapogolions\Suspendable;
 
 class Task
 {
-  private static $taskCount;
   private $id;
   private $suspendable;
   private $value = null;
   private $untracked = true;
 
-  public function __construct(\Generator $suspendable)
+  public function __construct($id, \Generator $suspendable)
   {
-    $this->id = ++self::$taskCount;
+    $this->id = $id;
     $this->suspendable = $suspendable;
   }
   

@@ -7,11 +7,13 @@ use Mapogolions\Suspendable\System\SystemCall;
 
 class Scheduler
 {
+  private $taskCount;
   private $ready;
   private $tasks;
 
   public function __construct()
   {
+    $this->taskCount = 0;
     $this->ready = new \SplQueue();
     $this->tasks = [];
   }
@@ -35,7 +37,7 @@ class Scheduler
     return $pl;
   }
 
-  public static function from(array &$suspandables)
+  public static function from(array $suspandables)
   {
     $pl = new Scheduler();
     foreach ($suspandables as $suspandable) {
@@ -46,7 +48,7 @@ class Scheduler
 
   public function spawn(\Generator $suspendable)
   {
-    $task = new Task($suspendable);
+    $task = new Task(++$this->taskCount, $suspendable);
     $this->tasks[$task->tid()] = $task;
     $this->schedule($task);
     return $task->tid();
@@ -61,6 +63,7 @@ class Scheduler
   {
     echo "Task {$task->tid()} is terminated" . PHP_EOL;
     unset($this->tasks[$task->tid()]);
+    return --$this->taskCount;
   }
 
   public function launch()
