@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 use Mapogolions\Suspendable\{ Task, StopIteration };
 use Mapogolions\Suspendable\TestKit\TestKit;
 
-final class TestTask extends TestCase
+final class TaskTest extends TestCase
 {
   public function testTaskTidInitialization()
   {

@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 use Mapogolions\Suspendable\{ Scheduler };
 use Mapogolions\Suspendable\TestKit\{ TestKit, Spy };
 
-class TestScheduler extends TestCase
+class SchedulerTest extends TestCase
 {
   public function testCountupToUpperBound()
   {

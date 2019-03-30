@@ -6,7 +6,7 @@ use Mapogolions\Suspendable\{ Scheduler };
 use Mapogolions\Suspendable\System\{ GetTid };
 use Mapogolions\Suspendable\TestKit\{ TestKit, Spy };
 
-class TestSystemGetTid extends TestCase
+class GetTidTest extends TestCase
 {
   public function testTaskIdentifier()
   {
