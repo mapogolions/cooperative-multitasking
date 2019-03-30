@@ -35,7 +35,7 @@ class Scheduler
     return $pl;
   }
 
-  public static function from(array $suspandables)
+  public static function from(array &$suspandables)
   {
     $pl = new Scheduler();
     foreach ($suspandables as $suspandable) {

@@ -22,4 +22,32 @@ class TestSystemGetTid extends TestCase
     $pl->launch();
     $this->assertEquals([1, 1], $spy->calls());
   }
+
+  public function testTaskAsDataProducerWithoutSystemCalls()
+  {
+    $spy = new Spy();
+    $this->assertEquals($spy->calls(), []);
+    $first = (function () {
+      $tid = yield new GetTid();
+      yield $tid;
+      yield $tid;
+    })();
+    $second = (function () {
+      $tid = yield new GetTid();
+      yield $tid;
+      yield $tid;
+      yield $tid;
+    })();
+    $pl = Scheduler::of(
+      TestKit::trackedAsDataProducer($first, $spy, TestKit::ignoreSystemCalls()),
+      TestKit::trackedAsDataProducer($second, $spy, TestKit::ignoreSystemCalls())
+    );
+    $pl->launch();
+    $this->assertEquals(
+      [
+        1, 2, 1, 2, 2
+      ],
+      $spy->calls()
+    );
+  }
 }

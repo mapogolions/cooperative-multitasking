@@ -53,13 +53,4 @@ class TestKit
       return $value instanceof SystemCall ? false : true;
     };
   }
-
-  public static function arrayOfSuspendable(\Generator $suspendable): array
-  {
-    $items = [];
-    foreach ($suspendable as $item) {
-      $items[] = $item;
-    }
-    return $items;
-  }
 }

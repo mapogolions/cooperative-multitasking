@@ -5,8 +5,12 @@ namespace Mapogolions\Suspendable\TestKit;
 
 class Spy
 {
-  private $result = [];
+  private $result;
  
+  public function __construct()
+  {
+    $this->result = array();
+  }
   public function apply($value)
   {
     $this->result[] = $value;
