@@ -18,10 +18,10 @@ class SchedulerTest extends TestCase
   public function testConcurrentExecutionOfTwoTasks()
   {
     $spy = new Spy();
-    $pl = Scheduler::from([
+    $pl = Scheduler::of(
       TestKit::trackedAsDataProducer(TestKit::countup(3), $spy),
       TestKit::trackedAsDataProducer(TestKit::countdown(6), $spy)
-    ]);
+    );
     $pl->launch();
     $this->assertEquals([1, 6, 2, 5, 3, 4, 3, 2, 1], $spy->calls());
   }

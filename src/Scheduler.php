@@ -37,15 +37,6 @@ class Scheduler
     return $pl;
   }
 
-  public static function from(array $suspandables)
-  {
-    $pl = new Scheduler();
-    foreach ($suspandables as $suspandable) {
-      $pl->spawn($suspandable);
-    }
-    return $pl;
-  }
-
   public function spawn(\Generator $suspendable)
   {
     $task = new Task(++$this->taskCount, $suspendable);
