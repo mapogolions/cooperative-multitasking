@@ -5,6 +5,7 @@ namespace Mapogolions\Suspendable\TestKit;
 
 use Mapogolions\Suspendable\TestKit\Spy;
 use Mapogolions\Suspendable\System\SystemCall;
+use Mapogolions\Suspendable\System\GetTid;
 
 class TestKit
 {
@@ -20,6 +21,14 @@ class TestKit
   {
     while ($n > 0) {
       yield $n--;
+    }
+  }
+
+  public static function infiniteLoop()
+  {
+    $tid = yield new GetTid();
+    while (true) {
+      yield $tid;
     }
   }
 

@@ -12,15 +12,33 @@ class NewTaskTest extends TestCase
   {
     $spy = new Spy();
     $inner = TestKit::trackedAsDataProducer(TestKit::countdown(4), $spy);
-    $outer = (function () use($inner) {
+    $outer = (function () use ($inner) {
       $tid = yield new GetTid();
       yield $tid;
-      $tid = yield new NewTask($inner);
+      $child = yield new NewTask($inner);
     })();
     $pl = Scheduler::of(
       TestKit::trackedAsDataProducer($outer, $spy, TestKit::ignoreSystemCalls())
     );
     $pl->launch();
     $this->assertEquals([1, 4, 3, 2, 1], $spy->calls());
+  }
+
+  public function testOverlappingBetweenTwoTasks()
+  {
+    $spy = new Spy();
+    $inner= TestKit::trackedAsDataProducer(TestKit::countdown(5), $spy);
+    $outer = (function () use ($inner) {
+      yield "start";
+      $child = yield new NewTask($inner);
+      yield "task $child is spawned";
+      yield "end";
+    })();
+    $pl = Scheduler::of(TestKit::trackedAsDataProducer($outer, $spy, TestKit::ignoreSystemCalls()));
+    $pl->launch();
+    $this->assertEquals(
+      ["start", 5, "task 2 is spawned", 4, "end", 3, 2, 1],
+      $spy->calls()
+    );
   }
 }
