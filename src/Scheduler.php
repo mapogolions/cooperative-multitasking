@@ -10,22 +10,29 @@ class Scheduler
   private $taskCount;
   private $ready;
   private $tasks;
+  private $defferedTasks;
 
   public function __construct()
   {
     $this->taskCount = 0;
     $this->ready = new \SplQueue();
     $this->tasks = [];
+    $this->defferedTasks = [];
   }
 
-  public function queue()
+  public function suspendedTasksPool()
   {
     return $this->ready;
   }
 
-  public function pool()
+  public function tasksPool()
   {
     return $this->tasks;
+  }
+
+  public function defferedTasksPool()
+  {
+    return $this->defferedTasks;
   }
 
   public static function of(\Generator ... $suspendables) 
@@ -54,7 +61,22 @@ class Scheduler
   {
     echo "Task {$task->tid()} is terminated" . PHP_EOL;
     unset($this->tasks[$task->tid()]);
+    $defferedTasks = $this->defferedTasks[$task->tid()] ?? [];
+    foreach ($defferedTasks as $defferedTask) {
+      $this->schedule($defferedTask);
+    }
+    unset($this->defferedTasks[$task->tid()]);
     return --$this->taskCount;
+  }
+
+  public function waitForExit(Task $defferedTask, int $tid)
+  {
+    if (array_key_exists($tid, $this->tasks)) {
+      $this->defferedTasks[$tid] = $this->defferedTasks[$tid] ?? [];
+      array_push($this->defferedTasks[$tid], $defferedTask);
+      return true;
+    }
+    return false;
   }
 
   public function launch()

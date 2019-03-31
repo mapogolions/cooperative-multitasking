@@ -15,7 +15,7 @@ class KillTask extends SystemCall
   }
   public function handle(Task $task, Scheduler $scheduler): void
   {
-    $killedTask = $scheduler->pool()[$this->tid];
+    $killedTask = $scheduler->tasksPool()[$this->tid];
     if (isset($killedTask)) {
       $task->setValue(true);
       $killedTask->setValue(new StopIteration());
