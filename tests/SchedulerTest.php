@@ -7,6 +7,13 @@ use Mapogolions\Suspendable\TestKit\{ TestKit, Spy };
 
 class SchedulerTest extends TestCase
 {
+  public function testSchedulerInitialState()
+  {
+    $pl = Scheduler::of(TestKit::countdown(10), TestKit::countup(10));
+    $this->assertSame(2, count($pl->tasksPool()));
+    $this->assertSame(0, count($pl->defferedTasksPool()));
+  }
+
   public function testCountupToUpperBound()
   {
     $spy = new Spy();

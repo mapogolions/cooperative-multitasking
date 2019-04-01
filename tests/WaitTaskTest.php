@@ -24,5 +24,6 @@ class WaitTaskTest extends TestCase
     );
     $pl->launch();
     $this->assertEquals(["start", 1, 2, 3, "end"], $spy->calls());
+    $this->assertEquals([], $pl->defferedTasksPool());
   }
 }
