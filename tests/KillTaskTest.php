@@ -8,7 +8,7 @@ use Mapogolions\Suspendable\TestKit\{ TestKit, Spy };
 
 class KillTaskTest extends TestCase
 {
-  public function testFirstDraft()
+  public function testKillInfiniteLoopAfterTwoIterations()
   {
     $spy = new Spy();
     $outer = (function () use ($spy) {
