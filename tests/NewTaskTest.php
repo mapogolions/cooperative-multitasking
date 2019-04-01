@@ -11,14 +11,14 @@ class NewTaskTest extends TestCase
   public function testSequentialExecuctionOfTwoTasks()
   {
     $spy = new Spy();
-    $inner = TestKit::trackedAsDataProducer(TestKit::countdown(4), $spy);
-    $outer = (function () use ($inner) {
+    $derivedSuspendable = TestKit::trackedAsDataProducer(TestKit::countdown(4), $spy);
+    $baseSuspendable = (function () use ($derivedSuspendable) {
       $tid = yield new GetTid();
       yield $tid;
-      $child = yield new NewTask($inner);
+      $childTid = yield new NewTask($derivedSuspendable);
     })();
     $pl = Scheduler::of(
-      TestKit::trackedAsDataProducer($outer, $spy, TestKit::ignoreSystemCalls())
+      TestKit::trackedAsDataProducer($baseSuspendable, $spy, TestKit::ignoreSystemCalls())
     );
     $pl->launch();
     $this->assertEquals([1, 4, 3, 2, 1], $spy->calls());
@@ -27,14 +27,16 @@ class NewTaskTest extends TestCase
   public function testOverlappingBetweenTwoTasks()
   {
     $spy = new Spy();
-    $inner= TestKit::trackedAsDataProducer(TestKit::countdown(5), $spy);
-    $outer = (function () use ($inner) {
+    $derivedSuspendable= TestKit::trackedAsDataProducer(TestKit::countdown(5), $spy);
+    $baseSuspendable = (function () use ($derivedSuspendable) {
       yield "start";
-      $child = yield new NewTask($inner);
+      $child = yield new NewTask($derivedSuspendable);
       yield "task $child is spawned";
       yield "end";
     })();
-    $pl = Scheduler::of(TestKit::trackedAsDataProducer($outer, $spy, TestKit::ignoreSystemCalls()));
+    $pl = Scheduler::of(
+      TestKit::trackedAsDataProducer($baseSuspendable, $spy, TestKit::ignoreSystemCalls())
+    );
     $pl->launch();
     $this->assertEquals(
       ["start", 5, "task 2 is spawned", 4, "end", 3, 2, 1],

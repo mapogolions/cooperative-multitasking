@@ -27,20 +27,20 @@ class GetTidTest extends TestCase
   {
     $spy = new Spy();
     $this->assertEquals($spy->calls(), []);
-    $first = (function () {
+    $suspandable1 = (function () {
       $tid = yield new GetTid();
       yield $tid;
       yield $tid;
     })();
-    $second = (function () {
+    $suspandable2 = (function () {
       $tid = yield new GetTid();
       yield $tid;
       yield $tid;
       yield $tid;
     })();
     $pl = Scheduler::of(
-      TestKit::trackedAsDataProducer($first, $spy, TestKit::ignoreSystemCalls()),
-      TestKit::trackedAsDataProducer($second, $spy, TestKit::ignoreSystemCalls())
+      TestKit::trackedAsDataProducer($suspandable1, $spy, TestKit::ignoreSystemCalls()),
+      TestKit::trackedAsDataProducer($suspandable2, $spy, TestKit::ignoreSystemCalls())
     );
     $pl->launch();
     $this->assertEquals(

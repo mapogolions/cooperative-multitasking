@@ -13,10 +13,10 @@ class WaitTaskTest extends TestCase
     $spy = new Spy();
     $suspendable = (function () use ($spy) {
       yield "start";
-      $child = yield new NewTask(
+      $childTid = yield new NewTask(
         TestKit::trackedAsDataProducer(TestKit::countup(3), $spy)
       );
-      yield new WaitTask($child);
+      yield new WaitTask($childTid);
       yield "end";
     })();
     $pl = Scheduler::of(

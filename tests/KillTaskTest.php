@@ -11,19 +11,19 @@ class KillTaskTest extends TestCase
   public function testKillInfiniteLoopAfterTwoIterations()
   {
     $spy = new Spy();
-    $outer = (function () use ($spy) {
+    $suspendable = (function () use ($spy) {
       $tid = yield new GetTid();
-      $child = yield new NewTask(
+      $childTid = yield new NewTask(
         TestKit::trackedAsDataProducer(TestKit::infiniteLoop(), $spy, TestKit::ignoreSystemCalls())
       );
       for ($i = 0; $i < 2; $i++) {
         yield $tid;
       }
-      yield new KillTask($child);
+      yield new KillTask($childTid);
     })();
 
     $pl = Scheduler::of(
-      TestKit::trackedAsDataProducer($outer, $spy, TestKit::ignoreSystemCalls())
+      TestKit::trackedAsDataProducer($suspendable, $spy, TestKit::ignoreSystemCalls())
     );
     $pl->launch();
     $this->assertEquals([1, 2, 1, 2], $spy->calls());

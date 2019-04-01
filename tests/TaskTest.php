@@ -17,8 +17,7 @@ final class TaskTest extends TestCase
 
   public function testTaskDrain()
   {
-    $upperBound = 2;
-    $suspendable = TestKit::countdown($upperBound);
+    $suspendable = TestKit::countdown(2);
     $task = new Task(1, $suspendable);
     $this->assertSame($task->run(), 2);
     $this->assertSame($task->run(), 1);
