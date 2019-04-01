@@ -5,7 +5,7 @@ namespace Mapogolions\Suspendable\System;
 
 use Mapogolions\Suspendable\{ Task, Scheduler };
 
-class GetTid extends SystemCall
+final class GetTid extends SystemCall
 {
   public function handle(Task $task, Scheduler $scheduler): void
   {

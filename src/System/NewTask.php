@@ -5,7 +5,7 @@ namespace Mapogolions\Suspendable\System;
 
 use Mapogolions\Suspendable\{ Task, Scheduler };
 
-class NewTask extends SystemCall
+final class NewTask extends SystemCall
 {
   private $suspendable;
 

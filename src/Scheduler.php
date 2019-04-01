@@ -84,9 +84,9 @@ class Scheduler
     while (count($this->tasks) > 0) {
       $task = $this->ready->dequeue();
       try {
-        $value = $task->run();
-        if ($value instanceof SystemCall) {
-          $value->handle($task, $this);
+        $exhaust = $task->run();
+        if ($exhaust instanceof SystemCall) {
+          $exhaust->handle($task, $this);
           continue;
         }
         $this->schedule($task);

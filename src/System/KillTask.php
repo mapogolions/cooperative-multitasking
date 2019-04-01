@@ -5,7 +5,7 @@ namespace Mapogolions\Suspendable\System;
 
 use Mapogolions\Suspendable\{ Task, Scheduler, StopIteration };
 
-class KillTask extends SystemCall
+final class KillTask extends SystemCall
 {
   private $tid;
 

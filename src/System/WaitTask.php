@@ -6,7 +6,7 @@ namespace Mapogolions\Suspendable\System;
 use Mapogolions\Suspendable\System\SystemCall;
 use Mapogolions\Suspendable\{ Task, Scheduler };
 
-class WaitTask extends SystemCall
+final class WaitTask extends SystemCall
 {
   private $tid;
 
