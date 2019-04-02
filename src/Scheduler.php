@@ -59,7 +59,7 @@ class Scheduler
 
   public function kill(Task $task)
   {
-    echo "Task {$task->tid()} is terminated" . PHP_EOL;
+    // echo "Task {$task->tid()} is terminated" . PHP_EOL;
     unset($this->tasks[$task->tid()]);
     $defferedTasks = $this->defferedTasks[$task->tid()] ?? [];
     foreach ($defferedTasks as $defferedTask) {

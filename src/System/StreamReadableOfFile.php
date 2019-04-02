@@ -6,17 +6,15 @@ namespace Mapogolions\Suspendable\System;
 use Mapogolions\Suspendable\System\{ SystemCall };
 use Mapogolions\Suspendable\{ Scheduler, Task, StopIteration };
 
-class ReadFile extends SystemCall
+class StreamReadableOfFile extends SystemCall
 {
   private $fileName;
   private $mode;
-  private $out;
 
-  public function __construct(string $fileName, string $mode="r", $out=STDOUT)
+  public function __construct(string $fileName, string $mode="r")
   {
     $this->fileName = $fileName;
     $this->mode = $mode;
-    $this->out = $out;
   }
 
   private function readable()
@@ -27,9 +25,7 @@ class ReadFile extends SystemCall
     }
     try {
       while (!\feof($file)) {
-        $data = \fread($file, 1024);
-        \fwrite($this->out, $data);
-        yield $data;
+        yield \fgets($file);
       }
     } finally {
       \fclose($file);
@@ -39,8 +35,7 @@ class ReadFile extends SystemCall
 
   public function handle(Task $task, Scheduler $scheduler): void
   {
-    $tid = $scheduler->spawn($this->readable());
-    $task->setValue($tid);
+    $task->setValue($this->readable());
     $scheduler->schedule($task);
   }
 }
