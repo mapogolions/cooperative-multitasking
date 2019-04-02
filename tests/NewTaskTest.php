@@ -17,10 +17,12 @@ class NewTaskTest extends TestCase
       yield $tid;
       $childTid = yield new NewTask($derivedSuspendable);
     })();
-    $pl = Scheduler::of(
-      TestKit::trackedAsDataProducer($baseSuspendable, $spy, TestKit::ignoreSystemCalls())
-    );
-    $pl->launch();
+    $pl = new Scheduler();
+    $pl
+      ->spawn(
+        TestKit::trackedAsDataProducer($baseSuspendable, $spy, TestKit::ignoreSystemCalls())
+      )
+      ->launch();
     $this->assertEquals([1, 4, 3, 2, 1], $spy->calls());
   }
 
@@ -34,10 +36,12 @@ class NewTaskTest extends TestCase
       yield "task $child is spawned";
       yield "end";
     })();
-    $pl = Scheduler::of(
-      TestKit::trackedAsDataProducer($baseSuspendable, $spy, TestKit::ignoreSystemCalls())
-    );
-    $pl->launch();
+    $pl = new Scheduler();
+    $pl
+      ->spawn(
+        TestKit::trackedAsDataProducer($baseSuspendable, $spy, TestKit::ignoreSystemCalls())  
+      )
+      ->launch();
     $this->assertEquals(
       ["start", 5, "task 2 is spawned", 4, "end", 3, 2, 1],
       $spy->calls()

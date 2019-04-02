@@ -11,7 +11,7 @@ class Scheduler
   private $ready;
   private $tasks;
   private $defferedTasks;
-
+  
   public function __construct()
   {
     $this->taskCount = 0;
@@ -35,21 +35,12 @@ class Scheduler
     return $this->defferedTasks;
   }
 
-  public static function of(\Generator ... $suspendables) 
-  {
-    $pl = new Scheduler();
-    foreach ($suspendables as $suspendable) {
-      $pl->spawn($suspendable);
-    }
-    return $pl;
-  }
-
   public function spawn(\Generator $suspendable)
   {
     $task = new Task(++$this->taskCount, $suspendable);
     $this->tasks[$task->tid()] = $task;
     $this->schedule($task);
-    return $task->tid();
+    return $this;
   }
 
   public function schedule(Task $task)
@@ -59,7 +50,6 @@ class Scheduler
 
   public function kill(Task $task)
   {
-    // echo "Task {$task->tid()} is terminated" . PHP_EOL;
     unset($this->tasks[$task->tid()]);
     $defferedTasks = $this->defferedTasks[$task->tid()] ?? [];
     foreach ($defferedTasks as $defferedTask) {

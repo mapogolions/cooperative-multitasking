@@ -39,8 +39,8 @@ class ReadFile extends SystemCall
 
   public function handle(Task $task, Scheduler $scheduler): void
   {
-    $tid = $scheduler->spawn($this->readable());
-    $task->setValue($tid);
+    $scheduler->spawn($this->readable());
+    $task->setValue(count($scheduler->tasksPool()));
     $scheduler->schedule($task);
   }
 }

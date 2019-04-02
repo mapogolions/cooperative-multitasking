@@ -19,10 +19,12 @@ class WaitTaskTest extends TestCase
       yield new WaitTask($childTid);
       yield "end";
     })();
-    $pl = Scheduler::of(
-      TestKit::trackedAsDataProducer($suspendable, $spy, TestKit::ignoreSystemCalls())
-    );
-    $pl->launch();
+    $pl = new Scheduler();
+    $pl
+      ->spawn(
+        TestKit::trackedAsDataProducer($suspendable, $spy, TestKit::ignoreSystemCalls())
+      )
+      ->launch();
     $this->assertEquals(["start", 1, 2, 3, "end"], $spy->calls());
     $this->assertEquals([], $pl->defferedTasksPool());
   }

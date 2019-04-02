@@ -2,7 +2,7 @@
 use Mapogolions\Suspendable\Scheduler;
 use Mapogolions\Suspendable\System\{ StreamReadableOfFile };
 
-function streamReadable() {
+function flow() {
   $stream = yield new StreamReadableOfFile(__DIR__ . '/phpunit.xml', 'r');
   echo "start" . PHP_EOL;
   foreach ($stream as $data) {
@@ -12,6 +12,6 @@ function streamReadable() {
   echo "end" . PHP_EOL;
 }
 
-$pl = Scheduler::of(streamReadable());
+$pl = Scheduler::of(flow());
 $pl->launch();
 ```

@@ -25,8 +25,8 @@ class TimeSpan extends SystemCall
         yield;
       }
     })();
-    $tid = $scheduler->spawn($timespan);
-    $status = $scheduler->waitForExit($defferedTask, $tid);
+    $scheduler->spawn($timespan);
+    $status = $scheduler->waitForExit($defferedTask, count($scheduler->tasksPool()));
     $defferedTask->setValue($status);
   }
 }

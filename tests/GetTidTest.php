@@ -8,6 +8,21 @@ use Mapogolions\Suspendable\TestKit\{ TestKit, Spy };
 
 class GetTidTest extends TestCase
 {
+  private $scheduler;
+  private $spy;
+
+  public function setUp(): void
+  {
+    $this->scheduler = new Scheduler();
+    $this->spy = new Spy();
+  }
+
+  public function tearDown(): void
+  {
+    unset($this->scheduler);
+    unset($this->spy);
+  }
+
   public function testTaskIdentifier()
   {
     $suspandable = (function () {
@@ -15,18 +30,18 @@ class GetTidTest extends TestCase
       yield $tid;
       yield $tid;
     })();
-    $spy = new Spy();
-    $pl = Scheduler::of(
-      TestKit::trackedAsDataProducer($suspandable, $spy, TestKit::ignoreSystemCalls())
-    );
-    $pl->launch();
-    $this->assertEquals([1, 1], $spy->calls());
+    $this->scheduler
+      ->spawn(
+        TestKit::trackedAsDataProducer($suspandable, $this->spy, TestKit::ignoreSystemCalls())
+      )
+      ->launch();
+
+    $this->assertEquals([1, 1], $this->spy->calls());
   }
 
   public function testTaskAsDataProducerWithoutSystemCalls()
   {
-    $spy = new Spy();
-    $this->assertEquals($spy->calls(), []);
+    $this->assertEquals($this->spy->calls(), []);
     $suspandable1 = (function () {
       $tid = yield new GetTid();
       yield $tid;
@@ -38,16 +53,15 @@ class GetTidTest extends TestCase
       yield $tid;
       yield $tid;
     })();
-    $pl = Scheduler::of(
-      TestKit::trackedAsDataProducer($suspandable1, $spy, TestKit::ignoreSystemCalls()),
-      TestKit::trackedAsDataProducer($suspandable2, $spy, TestKit::ignoreSystemCalls())
-    );
-    $pl->launch();
-    $this->assertEquals(
-      [
-        1, 2, 1, 2, 2
-      ],
-      $spy->calls()
-    );
+    $this->scheduler
+      ->spawn(
+        TestKit::trackedAsDataProducer($suspandable1, $this->spy, TestKit::ignoreSystemCalls())
+      )
+      ->spawn(
+        TestKit::trackedAsDataProducer($suspandable2, $this->spy, TestKit::ignoreSystemCalls())
+      )
+      ->launch();
+
+    $this->assertEquals([1, 2, 1, 2, 2], $this->spy->calls());
   }
 }

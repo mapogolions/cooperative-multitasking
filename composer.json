@@ -6,7 +6,9 @@
             "email": "ivanovpavelalex45@gmail.com"
         }
     ],
-    "require": {},
+    "require": {
+        "monolog/monolog": "^1.24"
+    },
     "autoload": {
         "psr-4": {
             "Mapogolions\\Suspendable\\": "src/"    

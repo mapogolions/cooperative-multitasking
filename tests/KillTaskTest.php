@@ -22,10 +22,12 @@ class KillTaskTest extends TestCase
       yield new KillTask($childTid);
     })();
 
-    $pl = Scheduler::of(
-      TestKit::trackedAsDataProducer($suspendable, $spy, TestKit::ignoreSystemCalls())
-    );
-    $pl->launch();
+    $pl = new Scheduler();
+    $pl
+      ->spawn(
+        TestKit::trackedAsDataProducer($suspendable, $spy, TestKit::ignoreSystemCalls())
+      )
+      ->launch();
     $this->assertEquals([1, 2, 1, 2], $spy->calls());
   }
 }

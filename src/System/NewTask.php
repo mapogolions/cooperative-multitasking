@@ -16,8 +16,8 @@ final class NewTask extends SystemCall
 
   public function handle(Task $task, Scheduler $scheduler): void
   {
-    $tid = $scheduler->spawn($this->suspendable);
-    $task->setValue($tid);
+    $scheduler->spawn($this->suspendable);
+    $task->setValue(count($scheduler->tasksPool()));
     $scheduler->schedule($task);
   }
 }
