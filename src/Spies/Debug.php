@@ -1,9 +1,9 @@
 <?php
 namespace Mapogolions\Multitask\Spies;
 
-use Mapogolions\Multitask\Spies\Spy;
+use Mapogolions\Multitask\Spies\SpyInterface;
 
-final class Debug implements Spy
+final class Debug implements SpyInterface
 {
   private $out;
 
@@ -11,6 +11,7 @@ final class Debug implements Spy
   {
     $this->out = $out;
   }
+  
   public function __invoke($data)
   {
     \fwrite($this->out, $data . PHP_EOL);

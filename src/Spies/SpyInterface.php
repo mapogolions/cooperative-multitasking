@@ -1,7 +1,7 @@
 <?php
 namespace Mapogolions\Multitask\Spies;
 
-interface Spy
+interface SpyInterface
 {
   public function __invoke($data);
 }

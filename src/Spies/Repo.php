@@ -1,9 +1,9 @@
 <?php
 namespace Mapogolions\Multitask\Spies;
 
-use Mapogolions\Multitask\Spies\Spy;
+use Mapogolions\Multitask\Spies\SpyInterface;
 
-final class Repo implements Spy
+final class Repo implements SpyInterface
 {
   private $store;
 
