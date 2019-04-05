@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
-namespace Mapogolions\Suspendable;
+namespace Mapogolions\Multitask;
 
 class StopIteration extends \Exception {}

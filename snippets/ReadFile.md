@@ -1,3 +1,5 @@
+### Don't use
+
 ```php
 use Mapogolions\Suspendable\Scheduler;
 use Mapogolions\Suspendable\System\{ WaitTask, ReadFile };

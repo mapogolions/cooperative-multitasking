@@ -1,15 +1,13 @@
 <?php
-declare(strict_types=1);
+namespace Mapogolions\Multitask\System;
 
-namespace Mapogolions\Suspendable\System;
-
-use Mapogolions\Suspendable\{ Task, Scheduler };
+use Mapogolions\Multitask\{ Task, Scheduler };
 
 final class NewTask extends SystemCall
 {
   private $suspendable;
 
-  public function __construct(\Generator $suspendable)
+  public function __construct($suspendable)
   {
     $this->suspendable = $suspendable;
   }
@@ -19,5 +17,10 @@ final class NewTask extends SystemCall
     $scheduler->spawn($this->suspendable);
     $task->setValue(count($scheduler->tasksPool()));
     $scheduler->schedule($task);
+  }
+
+  public function __toString()
+  {
+    return "<system call> NewTask";
   }
 }

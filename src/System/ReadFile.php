@@ -1,12 +1,10 @@
 <?php
-declare(strict_types=1);
+namespace Mapogolions\Multitask\System;
 
-namespace Mapogolions\Suspendable\System;
+use Mapogolions\Multitask\System\{ SystemCall };
+use Mapogolions\Multitask\{ Scheduler, Task, StopIteration };
 
-use Mapogolions\Suspendable\System\{ SystemCall };
-use Mapogolions\Suspendable\{ Scheduler, Task, StopIteration };
-
-class ReadFile extends SystemCall
+final class ReadFile extends SystemCall
 {
   private $fileName;
   private $mode;
@@ -42,5 +40,10 @@ class ReadFile extends SystemCall
     $scheduler->spawn($this->readable());
     $task->setValue(count($scheduler->tasksPool()));
     $scheduler->schedule($task);
+  }
+
+  public function __toString()
+  {
+    return "<system call> ReadFile";
   }
 }

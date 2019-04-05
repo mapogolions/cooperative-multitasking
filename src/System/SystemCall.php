@@ -1,9 +1,7 @@
 <?php
-declare(strict_types=1);
+namespace Mapogolions\Multitask\System;
 
-namespace Mapogolions\Suspendable\System;
-
-use Mapogolions\Suspendable\{ Task, Scheduler };
+use Mapogolions\Multitask\{ Task, Scheduler };
 
 abstract class SystemCall
 {

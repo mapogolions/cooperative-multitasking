@@ -1,9 +1,7 @@
 <?php
-declare(strict_types=1);
+namespace Mapogolions\Multitask\System;
 
-namespace Mapogolions\Suspendable\System;
-
-use Mapogolions\Suspendable\{ Task, Scheduler, StopIteration };
+use Mapogolions\Multitask\{ Task, Scheduler, StopIteration };
 
 final class KillTask extends SystemCall
 {
@@ -13,6 +11,7 @@ final class KillTask extends SystemCall
   {
     $this->tid = $tid;
   }
+
   public function handle(Task $task, Scheduler $scheduler): void
   {
     $killedTask = $scheduler->tasksPool()[$this->tid];
@@ -23,5 +22,10 @@ final class KillTask extends SystemCall
       $task->setValue(false);
     }
     $scheduler->schedule($task);
+  }
+
+  public function __toString()
+  {
+    return "<system call> KillTask";
   }
 }

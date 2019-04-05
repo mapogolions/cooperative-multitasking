@@ -1,17 +1,16 @@
 <?php
-declare(strict_types=1);
-
 use PHPUnit\Framework\TestCase;
-use Mapogolions\Suspendable\{ Scheduler };
-use Mapogolions\Suspendable\System\{ GetTid, NewTask };
-use Mapogolions\Suspendable\TestKit\{ TestKit, Spy };
+use Mapogolions\Multitask\{ Scheduler, Utils };
+use Mapogolions\Multitask\System\{ SystemCall, GetTid, NewTask };
+use Mapogolions\Multitask\Suspendable\DataProducer;
+use Mapogolions\Multitask\Spies\Repo;
 
 class NewTaskTest extends TestCase
 {
   public function testSequentialExecuctionOfTwoTasks()
   {
-    $spy = new Spy();
-    $derivedSuspendable = TestKit::trackedAsDataProducer(TestKit::countdown(4), $spy);
+    $spy = new Repo();
+    $derivedSuspendable = new DataProducer(Utils::countdown(4), $spy);
     $baseSuspendable = (function () use ($derivedSuspendable) {
       $tid = yield new GetTid();
       yield $tid;
@@ -19,32 +18,13 @@ class NewTaskTest extends TestCase
     })();
     $pl = new Scheduler();
     $pl
-      ->spawn(
-        TestKit::trackedAsDataProducer($baseSuspendable, $spy, TestKit::ignoreSystemCalls())
-      )
-      ->launch();
-    $this->assertEquals([1, 4, 3, 2, 1], $spy->calls());
-  }
-
-  public function testOverlappingBetweenTwoTasks()
-  {
-    $spy = new Spy();
-    $derivedSuspendable= TestKit::trackedAsDataProducer(TestKit::countdown(5), $spy);
-    $baseSuspendable = (function () use ($derivedSuspendable) {
-      yield "start";
-      $child = yield new NewTask($derivedSuspendable);
-      yield "task $child is spawned";
-      yield "end";
-    })();
-    $pl = new Scheduler();
-    $pl
-      ->spawn(
-        TestKit::trackedAsDataProducer($baseSuspendable, $spy, TestKit::ignoreSystemCalls())  
-      )
+      ->spawn(new DataProducer($baseSuspendable, $spy))
       ->launch();
     $this->assertEquals(
-      ["start", 5, "task 2 is spawned", 4, "end", 3, 2, 1],
-      $spy->calls()
+      ["<system call> GetTid", 1, "<system call> NewTask", 4, 3, 2, 1], 
+      array_map(function ($it) {
+        return $it instanceof SystemCall ? (string) $it : $it;
+      }, $spy->stock())
     );
   }
 }

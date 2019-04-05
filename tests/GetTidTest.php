@@ -1,28 +1,12 @@
 <?php
-declare(strict_types=1);
-
 use PHPUnit\Framework\TestCase;
-use Mapogolions\Suspendable\{ Scheduler };
-use Mapogolions\Suspendable\System\{ GetTid };
-use Mapogolions\Suspendable\TestKit\{ TestKit, Spy };
+use Mapogolions\Multitask\{ Scheduler };
+use Mapogolions\Multitask\System\{ SystemCall, GetTid };
+use Mapogolions\Multitask\Spies\Repo;
+use Mapogolions\Multitask\Suspendable\DataProducer;
 
 class GetTidTest extends TestCase
 {
-  private $scheduler;
-  private $spy;
-
-  public function setUp(): void
-  {
-    $this->scheduler = new Scheduler();
-    $this->spy = new Spy();
-  }
-
-  public function tearDown(): void
-  {
-    unset($this->scheduler);
-    unset($this->spy);
-  }
-
   public function testTaskIdentifier()
   {
     $suspandable = (function () {
@@ -30,18 +14,24 @@ class GetTidTest extends TestCase
       yield $tid;
       yield $tid;
     })();
-    $this->scheduler
-      ->spawn(
-        TestKit::trackedAsDataProducer($suspandable, $this->spy, TestKit::ignoreSystemCalls())
-      )
+    $spy = new Repo();
+    $pl = new Scheduler();
+    $pl
+      ->spawn(new DataProducer($suspandable, $spy))
       ->launch();
 
-    $this->assertEquals([1, 1], $this->spy->calls());
+    $this->assertEquals(
+      ["<system call> GetTid", 1, 1], 
+      array_map(function ($it) {
+        return $it instanceof SystemCall ? (string) $it : $it;
+      }, $spy->stock())
+    );
   }
 
   public function testTaskAsDataProducerWithoutSystemCalls()
   {
-    $this->assertEquals($this->spy->calls(), []);
+    $spy = new Repo();
+    $this->assertEquals($spy->stock(), []);
     $suspandable1 = (function () {
       $tid = yield new GetTid();
       yield $tid;
@@ -53,15 +43,17 @@ class GetTidTest extends TestCase
       yield $tid;
       yield $tid;
     })();
-    $this->scheduler
-      ->spawn(
-        TestKit::trackedAsDataProducer($suspandable1, $this->spy, TestKit::ignoreSystemCalls())
-      )
-      ->spawn(
-        TestKit::trackedAsDataProducer($suspandable2, $this->spy, TestKit::ignoreSystemCalls())
-      )
+    $pl = new Scheduler();
+    $pl
+      ->spawn(new DataProducer($suspandable1, $spy))
+      ->spawn(new DataProducer($suspandable2, $spy))
       ->launch();
 
-    $this->assertEquals([1, 2, 1, 2, 2], $this->spy->calls());
+    $this->assertEquals(
+      ["<system call> GetTid", "<system call> GetTid", 1, 2, 1, 2, 2], 
+      array_map(function ($it) {
+        return $it instanceof SystemCall ? (string) $it : $it;
+      }, $spy->stock())
+    );
   }
 }

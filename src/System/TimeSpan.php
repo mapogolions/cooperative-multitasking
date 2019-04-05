@@ -1,13 +1,11 @@
 <?php
-declare(strict_types=1);
-
 namespace Mapogolions\Suspendable\System;
 
 use Mapogolions\Suspendable\System\SystemCall;
 use Mapogolions\Suspendable\{ Task, Scheduler };
 
 
-class TimeSpan extends SystemCall
+final class TimeSpan extends SystemCall
 {
   private $startTime;
   private $delay;
@@ -28,6 +26,11 @@ class TimeSpan extends SystemCall
     $scheduler->spawn($timespan);
     $status = $scheduler->waitForExit($defferedTask, count($scheduler->tasksPool()));
     $defferedTask->setValue($status);
+  }
+
+  public function __toString()
+  {
+    return "<system call> TimeSpan";
   }
 }
 

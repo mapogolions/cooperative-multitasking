@@ -1,9 +1,7 @@
 <?php
-declare(strict_types=1);
+namespace Mapogolions\Multitask\System;
 
-namespace Mapogolions\Suspendable\System;
-
-use Mapogolions\Suspendable\{ Task, Scheduler };
+use Mapogolions\Multitask\{ Task, Scheduler };
 
 final class GetTid extends SystemCall
 {
@@ -11,5 +9,10 @@ final class GetTid extends SystemCall
   {
     $task->setValue($task->tid());
     $scheduler->schedule($task);
+  }
+
+  public function __toString()
+  {
+    return "<system call> GetTid";
   }
 }

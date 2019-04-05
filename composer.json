@@ -1,17 +1,9 @@
 {
-    "name": "tom/base",
-    "authors": [
-        {
-            "name": "Pavel Ivanov",
-            "email": "ivanovpavelalex45@gmail.com"
-        }
-    ],
     "require": {
-        "monolog/monolog": "^1.24"
     },
     "autoload": {
         "psr-4": {
-            "Mapogolions\\Suspendable\\": "src/"    
+            "Mapogolions\\Multitask\\": "src/"    
         }
     },
     "require-dev": {

@@ -1,7 +1,5 @@
 <?php
-declare(strict_types=1);
-
-namespace Mapogolions\Suspendable;
+namespace Mapogolions\Multitask;
 
 class Task
 {
@@ -10,7 +8,7 @@ class Task
   private $value = null;
   private $untracked = true;
 
-  public function __construct($id, \Generator $suspendable)
+  public function __construct($id, $suspendable)
   {
     $this->id = $id;
     $this->suspendable = $suspendable;

@@ -1,9 +1,7 @@
 <?php
-declare(strict_types=1);
+namespace Mapogolions\Multitask;
 
-namespace Mapogolions\Suspendable;
-
-use Mapogolions\Suspendable\System\SystemCall;
+use Mapogolions\Multitask\System\SystemCall;
 
 class Scheduler
 {
@@ -35,7 +33,7 @@ class Scheduler
     return $this->defferedTasks;
   }
 
-  public function spawn(\Generator $suspendable)
+  public function spawn($suspendable)
   {
     $task = new Task(++$this->taskCount, $suspendable);
     $this->tasks[$task->tid()] = $task;

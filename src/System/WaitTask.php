@@ -1,10 +1,8 @@
 <?php
-declare(strict_types=1);
+namespace Mapogolions\Multitask\System;
 
-namespace Mapogolions\Suspendable\System;
-
-use Mapogolions\Suspendable\System\SystemCall;
-use Mapogolions\Suspendable\{ Task, Scheduler };
+use Mapogolions\Multitask\System\SystemCall;
+use Mapogolions\Multitask\{ Task, Scheduler };
 
 final class WaitTask extends SystemCall
 {
@@ -22,5 +20,10 @@ final class WaitTask extends SystemCall
     if (!$status) {
       $scheduler->schedule($defferedTask);
     }
+  }
+
+  public function __toString()
+  {
+    return "<system call> WaitTask";
   }
 }
