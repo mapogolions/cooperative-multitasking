@@ -3,7 +3,8 @@ use Mapogolions\Multitask\Scheduler;
 use Mapogolions\Multitask\System\{ WaitTask, ReadFile };
 
 function flow() {
-  $childTid = yield new ReadFile(__DIR__ . '/phpunit.xml', 'r');
+  $descriptor = \fopen(__DIR__ . '/phpunit.xml', 'r');
+  $childTid = yield new ReadFile($descriptor);
   yield new WaitTask($childTid);
 }
 
@@ -20,7 +21,7 @@ use Mapogolions\Multitask\Spies\Debug;
 
 function flow() {
   $out = \fopen('settings.xml', 'w+');
-  $childTid = yield new ReadFile(__DIR__ . '/phpunit.xml', 'r', $out);
+  $childTid = yield new ReadFile(\fopen(__DIR__ . '/phpunit.xml', 'r'), $out);
   yield "Waiting for child";
   yield new WaitTask($childTid);
   \fclose($out);

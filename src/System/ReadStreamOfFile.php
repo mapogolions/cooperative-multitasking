@@ -4,29 +4,26 @@ namespace Mapogolions\Multitask\System;
 use Mapogolions\Multitask\System\{ SystemCall };
 use Mapogolions\Multitask\{ Scheduler, Task, StopIteration };
 
-final class StreamReadableOfFile extends SystemCall
+final class ReadStreamOfFile extends SystemCall
 {
-  private $fileName;
-  private $mode;
-
-  public function __construct(string $fileName, string $mode="r")
+  private $descriptor;
+  
+  public function __construct($descriptor)
   {
-    $this->fileName = $fileName;
-    $this->mode = $mode;
+    $this->descriptor = $descriptor;
   }
 
   private function readable()
   {
-    $file = \fopen($this->fileName, $this->mode);
-    if (!isset($file)) {
+    if (!isset($this->descriptor)) {
       throw new StopIteration();
     }
     try {
-      while (!\feof($file)) {
-        yield \fgets($file);
+      while (!\feof($this->descriptor)) {
+        yield \fgets($this->descriptor);
       }
     } finally {
-      \fclose($file);
+      \fclose($this->descriptor);
     }
     return true;
   }
@@ -39,6 +36,6 @@ final class StreamReadableOfFile extends SystemCall
 
   public function __toString()
   {
-    return "<system call> StreamReadableOfFile";
+    return "<system call> ReadStreamOfFile";
   }
 }

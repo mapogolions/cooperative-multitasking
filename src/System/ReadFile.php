@@ -1,38 +1,35 @@
 <?php
+
 namespace Mapogolions\Multitask\System;
 
-use Mapogolions\Multitask\System\{ SystemCall };
+use Mapogolions\Multitask\System\SystemCall;
 use Mapogolions\Multitask\{ Scheduler, Task, StopIteration };
 
-final class ReadFile extends SystemCall
+class ReadFile extends SystemCall
 {
-  private $fileName;
-  private $mode;
+  private $descriptor;
   private $out;
 
-  public function __construct(string $fileName, string $mode="r", $out=STDOUT)
+  public function __construct($descriptor, $out=STDOUT)
   {
-    $this->fileName = $fileName;
-    $this->mode = $mode;
+    $this->descriptor = $descriptor;
     $this->out = $out;
   }
 
-  private function readable()
+  public function readable()
   {
-    $file = \fopen($this->fileName, $this->mode);
-    if (!isset($file)) {
+    if (!isset($this->descriptor)) {
       throw new StopIteration();
     }
     try {
-      while (!\feof($file)) {
-        $data = \fread($file, 1024);
-        \fwrite($this->out, $data);
+      while (!\feof($this->descriptor)) {
+        $data = \fgets($this->descriptor);
+        \fwrite($this->out, (string) $data);
         yield $data;
       }
     } finally {
-      \fclose($file);
+      \fclose($this->descriptor);
     }
-    return true;
   }
 
   public function handle(Task $task, Scheduler $scheduler): void
