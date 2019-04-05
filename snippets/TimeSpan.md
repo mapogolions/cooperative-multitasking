@@ -1,15 +1,16 @@
-### Don't use
-
 ```php
-use Mapogolions\Suspendable\Scheduler;
-use Mapogolions\Suspendable\System\{ TimeSpan };
+use Mapogolions\Multitask\Scheduler;
+use Mapogolions\Multitask\System\TimeSpan;
+use Mapogolions\Multitask\Suspendable\DataProducer;
+use Mapogolions\Multitask\Spies\Debug;
 
 function flow() {
-  echo "start" . PHP_EOL;
+  yield "start";
   yield new TimeSpan(2);
-  echo "end" . PHP_EOL;
+  yield "end";
 }
 
-$pl = Scheduler::of(flow());
-$pl->launch();
+Scheduler::create()
+  ->spawn(new DataProducer(flow(), new Debug()))
+  ->launch();
 ```

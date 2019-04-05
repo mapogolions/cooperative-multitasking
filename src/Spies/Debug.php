@@ -14,6 +14,6 @@ final class Debug implements SpyInterface
   
   public function __invoke($data)
   {
-    \fwrite($this->out, $data . PHP_EOL);
+    \fwrite($this->out, (string) $data);
   }
 }

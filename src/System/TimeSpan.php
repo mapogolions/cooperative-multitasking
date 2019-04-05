@@ -1,8 +1,8 @@
 <?php
-namespace Mapogolions\Suspendable\System;
+namespace Mapogolions\Multitask\System;
 
-use Mapogolions\Suspendable\System\SystemCall;
-use Mapogolions\Suspendable\{ Task, Scheduler };
+use Mapogolions\Multitask\System\SystemCall;
+use Mapogolions\Multitask\{ Task, Scheduler };
 
 
 final class TimeSpan extends SystemCall
@@ -30,7 +30,7 @@ final class TimeSpan extends SystemCall
 
   public function __toString()
   {
-    return "<system call> TimeSpan";
+    return "<system call> TimeSpan({$this->delay})";
   }
 }
 

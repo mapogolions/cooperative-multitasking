@@ -1,19 +1,17 @@
-### Don't use
+### Deprecated
 
 ```php
-use Mapogolions\Suspendable\Scheduler;
-use Mapogolions\Suspendable\System\{ StreamReadableOfFile };
+use Mapogolions\Multitask\Scheduler;
+use Mapogolions\Multitask\System\StreamReadableOfFile;
+use Mapogolions\Multitask\Suspendable\DataProducer;
+use Mapogolions\Multitask\Spies\Debug;
 
 function flow() {
   $stream = yield new StreamReadableOfFile(__DIR__ . '/phpunit.xml', 'r');
-  echo "start" . PHP_EOL;
-  foreach ($stream as $data) {
-    echo $data;
-    yield $data;
-  }
-  echo "end" . PHP_EOL;
+  yield from $stream;
 }
 
-$pl = Scheduler::of(flow());
-$pl->launch();
+Scheduler::create()
+  ->spawn(new DataProducer(flow(), new Debug()))
+  ->launch();
 ```
