@@ -1,8 +1,8 @@
 ### Don't use
 
 ```php
-use Mapogolions\Suspendable\Scheduler;
-use Mapogolions\Suspendable\System\{ WaitTask, ReadFile };
+use Mapogolions\Multitask\Scheduler;
+use Mapogolions\Multitask\System\{ WaitTask, ReadFile };
 
 function flow() {
   $childTid = yield new ReadFile(__DIR__ . '/phpunit.xml', 'r');

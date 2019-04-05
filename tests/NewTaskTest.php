@@ -16,10 +16,10 @@ class NewTaskTest extends TestCase
       yield $tid;
       $childTid = yield new NewTask($derivedSuspendable);
     })();
-    $pl = new Scheduler();
-    $pl
+    Scheduler::create()
       ->spawn(new DataProducer($baseSuspendable, $spy))
       ->launch();
+    
     $this->assertEquals(
       ["<system call> GetTid", 1, "<system call> NewTask", 4, 3, 2, 1], 
       array_map(function ($it) {

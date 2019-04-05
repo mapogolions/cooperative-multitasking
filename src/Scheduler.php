@@ -18,6 +18,11 @@ class Scheduler
     $this->defferedTasks = [];
   }
 
+  public static function create()
+  {
+    return new Scheduler();
+  }
+
   public function suspendedTasksPool()
   {
     return $this->ready;

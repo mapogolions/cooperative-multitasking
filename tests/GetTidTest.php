@@ -15,8 +15,7 @@ class GetTidTest extends TestCase
       yield $tid;
     })();
     $spy = new Storage();
-    $pl = new Scheduler();
-    $pl
+    Scheduler::create()
       ->spawn(new DataProducer($suspandable, $spy))
       ->launch();
 
@@ -43,8 +42,7 @@ class GetTidTest extends TestCase
       yield $tid;
       yield $tid;
     })();
-    $pl = new Scheduler();
-    $pl
+    Scheduler::create()
       ->spawn(new DataProducer($suspandable1, $spy))
       ->spawn(new DataProducer($suspandable2, $spy))
       ->launch();

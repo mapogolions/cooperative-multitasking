@@ -16,11 +16,10 @@ class WaitTaskTest extends TestCase
       yield new WaitTask($childTid);
       yield "end";
     })();
-    $pl = new Scheduler();
-    $pl
+    Scheduler::create()
       ->spawn(new DataProducer($suspendable, $spy))
       ->launch();
-    $this->assertEquals([], $pl->defferedTasksPool());
+
     $this->assertEquals(
       ["start", "<system call> NewTask", 1, "<system call> WaitTask", 2, 3, "end"],
       array_map(function ($it) {
