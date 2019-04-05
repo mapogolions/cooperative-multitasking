@@ -2,7 +2,7 @@
 use PHPUnit\Framework\TestCase;
 use Mapogolions\Multitask\{ Scheduler };
 use Mapogolions\Multitask\System\{ SystemCall, GetTid };
-use Mapogolions\Multitask\Spies\Repo;
+use Mapogolions\Multitask\Spies\Storage;
 use Mapogolions\Multitask\Suspendable\DataProducer;
 
 class GetTidTest extends TestCase
@@ -14,7 +14,7 @@ class GetTidTest extends TestCase
       yield $tid;
       yield $tid;
     })();
-    $spy = new Repo();
+    $spy = new Storage();
     $pl = new Scheduler();
     $pl
       ->spawn(new DataProducer($suspandable, $spy))
@@ -30,7 +30,7 @@ class GetTidTest extends TestCase
 
   public function testTaskAsDataProducerWithoutSystemCalls()
   {
-    $spy = new Repo();
+    $spy = new Storage();
     $this->assertEquals($spy->stock(), []);
     $suspandable1 = (function () {
       $tid = yield new GetTid();

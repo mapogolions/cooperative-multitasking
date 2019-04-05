@@ -2,7 +2,7 @@
 use PHPUnit\Framework\TestCase;
 use Mapogolions\Multitask\{ Scheduler, Utils };
 use Mapogolions\Multitask\Suspendable\DataProducer;
-use Mapogolions\Multitask\Spies\Repo;
+use Mapogolions\Multitask\Spies\Storage;
 
 class SchedulerTest extends TestCase
 {
@@ -18,7 +18,7 @@ class SchedulerTest extends TestCase
 
   public function testCountupToUpperBound()
   {
-    $spy = new Repo();
+    $spy = new Storage();
     $pl = new Scheduler();
     $pl
       ->spawn(new DataProducer(Utils::countup(8), $spy))
@@ -28,7 +28,7 @@ class SchedulerTest extends TestCase
 
   public function testConcurrentExecutionOfTwoTasks()
   {
-    $spy = new Repo();
+    $spy = new Storage();
     $pl = new Scheduler();
     $pl
       ->spawn(new DataProducer(Utils::countup(3), $spy))

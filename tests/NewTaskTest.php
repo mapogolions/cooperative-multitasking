@@ -3,13 +3,13 @@ use PHPUnit\Framework\TestCase;
 use Mapogolions\Multitask\{ Scheduler, Utils };
 use Mapogolions\Multitask\System\{ SystemCall, GetTid, NewTask };
 use Mapogolions\Multitask\Suspendable\DataProducer;
-use Mapogolions\Multitask\Spies\Repo;
+use Mapogolions\Multitask\Spies\Storage;
 
 class NewTaskTest extends TestCase
 {
   public function testSequentialExecuctionOfTwoTasks()
   {
-    $spy = new Repo();
+    $spy = new Storage();
     $derivedSuspendable = new DataProducer(Utils::countdown(4), $spy);
     $baseSuspendable = (function () use ($derivedSuspendable) {
       $tid = yield new GetTid();

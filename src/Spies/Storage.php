@@ -3,22 +3,22 @@ namespace Mapogolions\Multitask\Spies;
 
 use Mapogolions\Multitask\Spies\SpyInterface;
 
-final class Repo implements SpyInterface
+final class Storage implements SpyInterface
 {
-  private $store;
+  private $repo;
 
-  public function __construct($store=[])
+  public function __construct($repo=[])
   {
-    $this->store = $store;
+    $this->repo = $repo;
   }
 
   public function __invoke($data)
   {
-    $this->store[] = $data;
+    $this->repo[] = $data;
   }
 
   public function stock()
   {
-    return $this->store;
+    return $this->repo;
   }
 }
