@@ -1,9 +1,9 @@
 <?php
 namespace Mapogolions\Multitask\Suspendable;
 
-use Mapogolions\Multitask\Suspendable\SuspendableRoleInterface;
+use Mapogolions\Multitask\Suspendable\SuspendablePartInterface;
 
-class DataConsumer implements SuspendableRoleInterface
+class DataConsumer implements SuspendablePartInterface
 {
   private $store = [];
   private $suspendable;
