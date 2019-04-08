@@ -4,7 +4,7 @@ use Mapogolions\Multitask\{ Task, StopIteration, Utils };
 
 final class TaskTest extends TestCase
 {
-  public function testTaskTidInitialization()
+  public function testRightInitializationOfTaskInstance()
   {
     $task1 = new Task(1, Utils::countdown(2));
     $task2 = new Task(2, Utils::countdown(4));
@@ -12,7 +12,7 @@ final class TaskTest extends TestCase
     $this->assertSame($task2->tid(), 2);
   }
 
-  public function testTaskDrain()
+  public function testFullDrainOfTask()
   {
     $suspendable = Utils::countdown(2);
     $task = new Task(1, $suspendable);
@@ -21,7 +21,7 @@ final class TaskTest extends TestCase
     $this->assertTrue($suspendable->valid());
   }
 
-  public function testRaiseStopIterationWhenFullDrainHappens()
+  public function testRaiseStopIterationWhenFullDrainWasAchived()
   {
     $this->expectException(StopIteration::class);
     $upperBound = 10;
