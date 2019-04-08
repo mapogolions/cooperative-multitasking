@@ -22,14 +22,16 @@ class ReadStreamOfFileTest extends TestCase
 
   public function testNotFlushedStreamEmitsNothing()
   {
-    $suspendable = (function () {
-      $stream = yield new ReadStreamOfFile(\fopen($this->source->url(), "r"));
+    $descriptor = \fopen($this->source->url(), "r");
+    $suspendable = (function () use ($descriptor) {
+      $stream = yield new ReadStreamOfFile($descriptor);
       // nothing do
     })();
     Scheduler::create()
       ->spawn(new DataProducer($suspendable, $this->spy))
       ->launch();
 
+    $this->assertFalse($this->source->eof());
     $this->assertEquals(
       ["<system call> ReadStreamOfFile"],
       array_map(function ($it) {
@@ -40,14 +42,16 @@ class ReadStreamOfFileTest extends TestCase
 
   public function testFlushedStreamEmitsTheEntireContentsOfTheFile()
   {
-    $suspendable = (function () {
-      $stream = yield new ReadStreamOfFile(\fopen($this->source->url(), "r"));
+    $descriptor = \fopen($this->source->url(), "r");
+    $suspendable = (function () use ($descriptor) {
+      $stream = yield new ReadStreamOfFile($descriptor);
       yield from $stream;
     })();
     Scheduler::create()
       ->spawn(new DataProducer($suspendable, $this->spy))
       ->launch();
 
+    $this->assertTrue($this->source->eof());
     $this->assertEquals(
       ["<system call> ReadStreamOfFile", 1 . PHP_EOL, 2 . PHP_EOL],
       array_map(function ($it) {
