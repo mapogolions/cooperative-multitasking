@@ -5,7 +5,7 @@ namespace Mapogolions\Multitask\System;
 use Mapogolions\Multitask\System\SystemCall;
 use Mapogolions\Multitask\{ Scheduler, Task, StopIteration };
 
-class PrintFileContent extends SystemCall
+class ReadFile extends SystemCall
 {
   private $descriptor;
   private $out;
@@ -27,6 +27,8 @@ class PrintFileContent extends SystemCall
         \fwrite($this->out, (string) $data);
         yield $data;
       }
+    } catch (\Exception $e) {
+      new StopIteration();
     } finally {
       \fclose($this->descriptor);
     }
