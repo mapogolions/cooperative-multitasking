@@ -12,13 +12,22 @@ class ReadStreamOfFileTest extends TestCase
 {
   private $source;
   private $spy;
+  private $descriptor;
 
   public function setUp(): void
   {
-    $this->spy = new Storage();
     $this->source = vfsStream::newFile("tmp.txt")
       ->at(vfsStream::setup("home"))
       ->setContent(1 . PHP_EOL . 2 . PHP_EOL);
+    $this->spy = new Storage();
+    $this->descriptor = \fopen($this->source->url(), "r");
+  }
+
+  public function tearDown(): void
+  {
+    if (is_resource($this->descriptor)) {
+      \fclose($this->descriptor);
+    }
   }
 
   private function flushedStream($descriptor)
@@ -34,40 +43,37 @@ class ReadStreamOfFileTest extends TestCase
 
   public function testNotFlushedStreamCanBeClosed()
   {
-    $descriptor = \fopen($this->source->url(), "r");
     Scheduler::create()
-      ->spawn($this->notFlushedStream($descriptor))
+      ->spawn($this->notFlushedStream($this->descriptor))
       ->launch();
 
-    $this->assertTrue(\fclose($descriptor));
+    $this->assertTrue(\fclose($this->descriptor));
   }
 
   public function testFlushedStreamCanNotBeClosed()
   {
     $this->expectException(Error::class);
-    $descriptor = \fopen($this->source->url(), "r");
+
     Scheduler::create()
-      ->spawn($this->flushedStream($descriptor))
+      ->spawn($this->flushedStream($this->descriptor))
       ->launch();
 
-    \fclose($descriptor);
+    \fclose($this->descriptor);
   }
 
   public function testNotFlushedStreamDoesNotAchiveEndOfFile()
   {
-    $descriptor = \fopen($this->source->url(), "r");
     Scheduler::create()
-      ->spawn($this->notFlushedStream($descriptor))
+      ->spawn($this->notFlushedStream($this->descriptor))
       ->launch();
 
     $this->assertFalse($this->source->eof());
   }
 
-  public function testFlushedStreamAchivesEndOfFile()
+  public function testFlushedStreamAchivesTheEndOfTheFile()
   {
-    $descriptor = \fopen($this->source->url(), "r");
     Scheduler::create()
-      ->spawn($this->flushedStream($descriptor))
+      ->spawn($this->flushedStream($this->descriptor))
       ->launch();
     
     $this->assertTrue($this->source->eof());
@@ -75,9 +81,8 @@ class ReadStreamOfFileTest extends TestCase
 
   public function testNotFlushedStreamEmitsNothing()
   {
-    $descriptor = \fopen($this->source->url(), "r");
     Scheduler::create()
-      ->spawn(new DataProducer($this->notFlushedStream($descriptor), $this->spy))
+      ->spawn(new DataProducer($this->notFlushedStream($this->descriptor), $this->spy))
       ->launch();
 
     $this->assertEquals(
@@ -90,9 +95,8 @@ class ReadStreamOfFileTest extends TestCase
 
   public function testFlushedStreamEmitsTheEntireContentsOfTheFile()
   {
-    $descriptor = \fopen($this->source->url(), "r");
     Scheduler::create()
-      ->spawn(new DataProducer($this->flushedStream($descriptor), $this->spy))
+      ->spawn(new DataProducer($this->flushedStream($this->descriptor), $this->spy))
       ->launch();
 
     $this->assertEquals(
