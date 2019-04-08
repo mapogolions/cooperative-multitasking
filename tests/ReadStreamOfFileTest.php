@@ -1,6 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Error\Error;
 use org\bovigo\vfs\vfsStream;
 use Mapogolions\Multitask\Scheduler;
 use Mapogolions\Multitask\Suspendable\DataProducer;
@@ -20,18 +21,65 @@ class ReadStreamOfFileTest extends TestCase
       ->setContent(1 . PHP_EOL . 2 . PHP_EOL);
   }
 
-  public function testNotFlushedStreamEmitsNothing()
+  private function flushedStream($descriptor)
+  {
+    $stream = yield new ReadStreamOfFile($descriptor);
+    yield from $stream;
+  }
+
+  private function notFlushedStream($descriptor)
+  {
+    $stream = yield new ReadStreamOfFile($descriptor);
+  }
+
+  public function testNotFlushedStreamCanBeClosed()
   {
     $descriptor = \fopen($this->source->url(), "r");
-    $suspendable = (function () use ($descriptor) {
-      $stream = yield new ReadStreamOfFile($descriptor);
-      // nothing do
-    })();
     Scheduler::create()
-      ->spawn(new DataProducer($suspendable, $this->spy))
+      ->spawn($this->notFlushedStream($descriptor))
+      ->launch();
+
+    $this->assertTrue(\fclose($descriptor));
+  }
+
+  public function testFlushedStreamCanNotBeClosed()
+  {
+    $this->expectException(Error::class);
+    $descriptor = \fopen($this->source->url(), "r");
+    Scheduler::create()
+      ->spawn($this->flushedStream($descriptor))
+      ->launch();
+
+    \fclose($descriptor);
+  }
+
+  public function testNotFlushedStreamDoesNotAchiveEndOfFile()
+  {
+    $descriptor = \fopen($this->source->url(), "r");
+    Scheduler::create()
+      ->spawn($this->notFlushedStream($descriptor))
       ->launch();
 
     $this->assertFalse($this->source->eof());
+  }
+
+  public function testFlushedStreamAchivesEndOfFile()
+  {
+    $descriptor = \fopen($this->source->url(), "r");
+    Scheduler::create()
+      ->spawn($this->flushedStream($descriptor))
+      ->launch();
+    
+    $this->assertTrue($this->source->eof());
+  }
+
+  public function testNotFlushedStreamEmitsNothing()
+  {
+    $descriptor = \fopen($this->source->url(), "r");
+    Scheduler::create()
+      ->spawn(new DataProducer($this->notFlushedStream($descriptor), $this->spy))
+      ->launch();
+
     $this->assertEquals(
       ["<system call> ReadStreamOfFile"],
       array_map(function ($it) {
@@ -43,15 +91,10 @@ class ReadStreamOfFileTest extends TestCase
   public function testFlushedStreamEmitsTheEntireContentsOfTheFile()
   {
     $descriptor = \fopen($this->source->url(), "r");
-    $suspendable = (function () use ($descriptor) {
-      $stream = yield new ReadStreamOfFile($descriptor);
-      yield from $stream;
-    })();
     Scheduler::create()
-      ->spawn(new DataProducer($suspendable, $this->spy))
+      ->spawn(new DataProducer($this->flushedStream($descriptor), $this->spy))
       ->launch();
 
-    $this->assertTrue($this->source->eof());
     $this->assertEquals(
       ["<system call> ReadStreamOfFile", 1 . PHP_EOL, 2 . PHP_EOL],
       array_map(function ($it) {
