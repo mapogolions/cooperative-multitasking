@@ -5,7 +5,7 @@ namespace Mapogolions\Multitask\System;
 use Mapogolions\Multitask\System\SystemCall;
 use Mapogolions\Multitask\{ Scheduler, Task, StopIteration };
 
-class ReadFile extends SystemCall
+class PrintFileContent extends SystemCall
 {
   private $descriptor;
   private $out;
@@ -41,6 +41,6 @@ class ReadFile extends SystemCall
 
   public function __toString()
   {
-    return "<system call> ReadFile";
+    return "<system call> PrintFileContent";
   }
 }
