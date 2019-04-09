@@ -16,3 +16,19 @@ An insight:
 * control is passed back to whatever code make the generator function run (unseen) 
 
 * if you treat yield as a trap, you can build a multitasking "operating system" -- all in PHP!
+
+
+#### How to use
+
+```sh
+> git clone ...
+> cd project
+> php composer.phar install / composer install
+> ./vendor/bin/phpunit
+```
+
+then copy any snippet (snippets directory) and paste to the `App.php` file.
+
+```sh
+> php -f App.php
+```
