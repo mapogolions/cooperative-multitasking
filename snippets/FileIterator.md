@@ -1,13 +1,12 @@
-### Deprecated
-
 ```php
 use Mapogolions\Multitask\Scheduler;
-use Mapogolions\Multitask\System\StreamReadableOfFile;
+use Mapogolions\Multitask\System\FileIterator;
 use Mapogolions\Multitask\Suspendable\DataProducer;
 use Mapogolions\Multitask\Spies\Debug;
 
 function flow() {
-  $stream = yield new StreamReadableOfFile(__DIR__ . '/phpunit.xml', 'r');
+  $descriptor = \fopen(__DIR__ . "/phpunit.xml", "r");
+  $stream = yield new FileIterator($descriptor);
   yield from $stream;
 }
 
