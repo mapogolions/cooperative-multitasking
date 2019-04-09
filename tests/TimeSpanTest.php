@@ -9,7 +9,7 @@ use Mapogolions\Multitask\System\SystemCall;
 
 class TimeSpanTest extends TestCase
 {
-  public function testH()
+  public function testExecutionFlowDelayForAWhile()
   {
     $suspendable = (function () {
       yield "start";
