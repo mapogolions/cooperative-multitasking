@@ -6,9 +6,9 @@ use org\bovigo\vfs\vfsStream;
 use Mapogolions\Multitask\Scheduler;
 use Mapogolions\Multitask\Suspendable\DataProducer;
 use Mapogolions\Multitask\Spies\Storage;
-use Mapogolions\Multitask\System\{ ReadStreamOfFile, SystemCall };
+use Mapogolions\Multitask\System\{ SystemCall, FileIterator };
 
-class ReadStreamOfFileTest extends TestCase
+class FileIteratorTest extends TestCase
 {
   private $source;
   private $spy;
@@ -32,13 +32,13 @@ class ReadStreamOfFileTest extends TestCase
 
   private function flushedStream($descriptor)
   {
-    $stream = yield new ReadStreamOfFile($descriptor);
+    $stream = yield new FileIterator($descriptor);
     yield from $stream;
   }
 
   private function notFlushedStream($descriptor)
   {
-    $stream = yield new ReadStreamOfFile($descriptor);
+    $stream = yield new FileIterator($descriptor);
   }
 
   public function testNotFlushedStreamCanBeClosed()
@@ -86,7 +86,7 @@ class ReadStreamOfFileTest extends TestCase
       ->launch();
 
     $this->assertEquals(
-      ["<system call> ReadStreamOfFile"],
+      ["<system call> FileIterator"],
       array_map(function ($it) {
         return $it instanceof SystemCall ? (string) $it : $it;
       }, $this->spy->stock())
@@ -100,7 +100,7 @@ class ReadStreamOfFileTest extends TestCase
       ->launch();
 
     $this->assertEquals(
-      ["<system call> ReadStreamOfFile", 1 . PHP_EOL, 2 . PHP_EOL],
+      ["<system call> FileIterator", 1 . PHP_EOL, 2 . PHP_EOL],
       array_map(function ($it) {
         return $it instanceof SystemCall ? (string) $it : $it;
       }, $this->spy->stock())
