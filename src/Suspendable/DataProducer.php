@@ -14,14 +14,17 @@ class DataProducer implements SuspendablePartInterface
     $this->suspendable = $suspendable;
     $this->spy = $spy;
   }
+
   public function yields(): \Iterator
   {
     return new \ArrayIterator($this->store);
   }
+
   public function next()
   {
     return $this->suspendable->next();
   }
+
   public function current()
   {
     $data = $this->suspendable->current();
@@ -32,18 +35,22 @@ class DataProducer implements SuspendablePartInterface
     }
     return $data;
   }
+
   public function valid()
   {
     return $this->suspendable->valid();
   }
+
   public function send($data)
   {
     return $this->suspendable->send($data);
   }
+
   public function key()
   {
     return $this->suspendable->key();
   }
+  
   public function rewind()
   {
     return $this->suspendable->rewind();

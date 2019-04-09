@@ -24,6 +24,7 @@ final class FileIterator extends SystemCall
       }
     } finally {
       \fclose($this->descriptor);
+      return false;
     }
     return true;
   }
