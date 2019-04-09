@@ -5,7 +5,7 @@ namespace Mapogolions\Multitask\System;
 use Mapogolions\Multitask\System\SystemCall;
 use Mapogolions\Multitask\{ Scheduler, Task, StopIteration };
 
-class ReadFile extends SystemCall
+final class ReadFile extends SystemCall
 {
   private $descriptor;
   private $out;
