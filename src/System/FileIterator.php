@@ -7,7 +7,7 @@ use Mapogolions\Multitask\{ Scheduler, Task, StopIteration };
 final class FileIterator extends SystemCall
 {
   private $descriptor;
-  
+
   public function __construct($descriptor)
   {
     $this->descriptor = $descriptor;

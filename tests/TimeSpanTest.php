@@ -20,9 +20,9 @@ class TimeSpanTest extends TestCase
     Scheduler::create()
       ->spawn(new DataProducer($suspendable, $spy))
       ->launch();
-    
+
     $this->assertEquals(
-      ["start", "<system call> TimeSpan(0.1)", "end"], 
+      ["start", "<system call> TimeSpan(0.1)", "end"],
       array_map(function ($it) {
         return $it instanceof SystemCall ? (string) $it : $it;
       }, $spy->stock())

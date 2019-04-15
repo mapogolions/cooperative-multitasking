@@ -25,6 +25,6 @@ class WaitTaskTest extends TestCase
       array_map(function ($it) {
         return $it instanceof SystemCall ? (string) $it : $it;
       }, $spy->stock())
-    );    
+    );
   }
 }

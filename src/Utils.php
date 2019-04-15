@@ -12,7 +12,7 @@ class Utils
       yield $counter++;
     }
   }
-  
+
   public static function countdown(int $n): \Generator
   {
     while ($n > 0) {

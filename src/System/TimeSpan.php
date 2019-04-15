@@ -13,7 +13,7 @@ final class TimeSpan extends SystemCall
   public function __construct($delay)
   {
     $this->startTime = \time();
-    $this->delay = $delay;  
+    $this->delay = $delay;
   }
 
   public function handle(Task $defferedTask, Scheduler $scheduler): void
@@ -33,4 +33,3 @@ final class TimeSpan extends SystemCall
     return "<system call> TimeSpan({$this->delay})";
   }
 }
-

@@ -50,7 +50,7 @@ class DataProducer implements SuspendablePartInterface
   {
     return $this->suspendable->key();
   }
-  
+
   public function rewind()
   {
     return $this->suspendable->rewind();

@@ -29,6 +29,7 @@ class DataConsumer implements SuspendablePartInterface
   {
     return $this->suspendable->current();
   }
+
   public function valid()
   {
     return $this->suspendable->valid();
@@ -48,7 +49,7 @@ class DataConsumer implements SuspendablePartInterface
   {
     return $this->suspendable->key();
   }
-  
+
   public function rewind()
   {
     return $this->suspendable->rewind();

@@ -13,7 +13,7 @@ class Task
     $this->id = $id;
     $this->suspendable = $suspendable;
   }
-  
+
   public function tid()
   {
     return $this->id;
@@ -23,6 +23,7 @@ class Task
   {
     return $this->value;
   }
+
   public function setValue($value)
   {
     $this->value = $value;
@@ -44,4 +45,3 @@ class Task
     return $this->suspendable->current();
   }
 }
-

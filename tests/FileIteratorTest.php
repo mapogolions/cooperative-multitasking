@@ -75,7 +75,7 @@ class FileIteratorTest extends TestCase
     Scheduler::create()
       ->spawn($this->flushedStream($this->descriptor))
       ->launch();
-    
+
     $this->assertTrue($this->source->eof());
   }
 

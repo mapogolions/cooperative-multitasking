@@ -34,7 +34,7 @@ class SchedulerTest extends TestCase
       ->spawn(new DataProducer(Utils::countup(3), $spy))
       ->spawn(new DataProducer(Utils::countdown(6), $spy))
       ->launch();
-      
+
     $this->assertEquals([1, 6, 2, 5, 3, 4, 3, 2, 1], $spy->stock());
   }
 }

@@ -20,7 +20,7 @@ class GetTidTest extends TestCase
       ->launch();
 
     $this->assertEquals(
-      ["<system call> GetTid", 1, 1], 
+      ["<system call> GetTid", 1, 1],
       array_map(function ($it) {
         return $it instanceof SystemCall ? (string) $it : $it;
       }, $spy->stock())
@@ -48,7 +48,7 @@ class GetTidTest extends TestCase
       ->launch();
 
     $this->assertEquals(
-      ["<system call> GetTid", "<system call> GetTid", 1, 2, 1, 2, 2], 
+      ["<system call> GetTid", "<system call> GetTid", 1, 2, 1, 2, 2],
       array_map(function ($it) {
         return $it instanceof SystemCall ? (string) $it : $it;
       }, $spy->stock())

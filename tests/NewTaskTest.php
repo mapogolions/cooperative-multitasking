@@ -19,9 +19,9 @@ class NewTaskTest extends TestCase
     Scheduler::create()
       ->spawn(new DataProducer($baseSuspendable, $spy))
       ->launch();
-    
+
     $this->assertEquals(
-      ["<system call> GetTid", 1, "<system call> NewTask", 4, 3, 2, 1], 
+      ["<system call> GetTid", 1, "<system call> NewTask", 4, 3, 2, 1],
       array_map(function ($it) {
         return $it instanceof SystemCall ? (string) $it : $it;
       }, $spy->stock())

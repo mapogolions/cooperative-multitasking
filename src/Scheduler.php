@@ -9,7 +9,7 @@ class Scheduler
   private $ready;
   private $tasks;
   private $defferedTasks;
-  
+
   public function __construct()
   {
     $this->taskCount = 0;

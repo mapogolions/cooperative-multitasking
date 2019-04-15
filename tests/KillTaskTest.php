@@ -23,7 +23,7 @@ class KillTaskTest extends TestCase
       ->launch();
 
     $this->assertEquals(
-      ["<system call> GetTid", "<system call> NewTask", "<system call> GetTid", 1, 2, 1, 2, "<system call> KillTask"], 
+      ["<system call> GetTid", "<system call> NewTask", "<system call> GetTid", 1, 2, 1, 2, "<system call> KillTask"],
       array_map(function ($it) {
         return $it instanceof SystemCall ? (string) $it : $it;
       }, $spy->stock())

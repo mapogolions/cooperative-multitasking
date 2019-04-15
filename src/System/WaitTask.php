@@ -10,7 +10,7 @@ final class WaitTask extends SystemCall
 
   public function __construct(int $tid)
   {
-    $this->tid = $tid;  
+    $this->tid = $tid;
   }
 
   public function handle(Task $defferedTask, Scheduler $scheduler): void
