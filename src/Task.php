@@ -6,7 +6,7 @@ class Task
 {
     private $id;
     private $suspendable;
-    private $value = null;
+    private $data = null;
     private $untracked = true;
 
     public function __construct($id, $suspendable)
@@ -20,14 +20,14 @@ class Task
         return $this->id;
     }
 
-    public function getValue()
+    public function yield()
     {
-        return $this->value;
+        return $this->data;
     }
 
-    public function setValue($value)
+    public function update($data)
     {
-        $this->value = $value;
+        $this->data = $data;
     }
 
     public function run()
@@ -36,10 +36,10 @@ class Task
             $this->untracked = false;
             return $this->suspendable->current();
         }
-        if ($this->value instanceof StopIteration) {
+        if ($this->data instanceof StopIteration) {
             throw new StopIteration();
         }
-        $this->suspendable->send($this->value);
+        $this->suspendable->send($this->data);
         if (!$this->suspendable->valid()) {
             throw new StopIteration();
         }

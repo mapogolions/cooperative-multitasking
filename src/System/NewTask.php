@@ -12,10 +12,10 @@ final class NewTask extends SystemCall
         $this->suspendable = $suspendable;
     }
 
-    public function handle(Task $task, Scheduler $scheduler): void
+    public function handle(Task $task, Scheduler $scheduler)
     {
         $scheduler->spawn($this->suspendable);
-        $task->setValue(count($scheduler->tasksPool()));
+        $task->update(count($scheduler->pool()));
         $scheduler->schedule($task);
     }
 

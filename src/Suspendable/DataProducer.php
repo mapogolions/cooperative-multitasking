@@ -1,9 +1,9 @@
 <?php
 namespace Mapogolions\Multitask\Suspendable;
 
-use Mapogolions\Multitask\Suspendable\SuspendablePartInterface;
+use Mapogolions\Multitask\Suspendable\SuspendableInterface;
 
-class DataProducer implements SuspendablePartInterface
+class DataProducer implements SuspendableInterface
 {
     private $store = [];
     private $suspendable;

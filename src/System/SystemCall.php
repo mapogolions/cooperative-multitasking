@@ -5,5 +5,5 @@ use Mapogolions\Multitask\{ Task, Scheduler };
 
 abstract class SystemCall
 {
-    abstract public function handle(Task $task, Scheduler $scheduler): void;
+    abstract public function handle(Task $task, Scheduler $scheduler);
 }

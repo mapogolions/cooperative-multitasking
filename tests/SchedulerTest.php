@@ -13,8 +13,8 @@ class SchedulerTest extends TestCase
             ->spawn(Utils::countdown(10))
             ->spawn(Utils::countup(10));
 
-        $this->assertSame(2, count($pl->tasksPool()));
-        $this->assertSame(0, count($pl->defferedTasksPool()));
+        $this->assertSame(2, count($pl->pool()));
+        $this->assertSame(0, count($pl->defferedPool()));
     }
 
     public function testCountupToUpperBound()

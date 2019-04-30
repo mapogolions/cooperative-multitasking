@@ -3,7 +3,7 @@ namespace Mapogolions\Multitask\Spies;
 
 use Mapogolions\Multitask\Spies\SpyInterface;
 
-final class SpyCalls implements SpyInterface
+class SpyCalls implements SpyInterface
 {
     private $repo = [];
 

@@ -4,7 +4,6 @@ namespace Mapogolions\Multitask\System;
 use Mapogolions\Multitask\System\SystemCall;
 use Mapogolions\Multitask\{ Task, Scheduler };
 
-
 final class TimeSpan extends SystemCall
 {
     private $startTime;
@@ -16,7 +15,7 @@ final class TimeSpan extends SystemCall
         $this->delay = $delay;
     }
 
-    public function handle(Task $defferedTask, Scheduler $scheduler): void
+    public function handle(Task $defferedTask, Scheduler $scheduler)
     {
         $timespan = (function () {
             while ($this->delay - (\time() - $this->startTime) > 0) {
@@ -24,8 +23,8 @@ final class TimeSpan extends SystemCall
             }
         })();
         $scheduler->spawn($timespan);
-        $status = $scheduler->waitForExit($defferedTask, count($scheduler->tasksPool()));
-        $defferedTask->setValue($status);
+        $status = $scheduler->waitForExit($defferedTask, count($scheduler->pool()));
+        $defferedTask->update($status);
     }
 
     public function __toString()

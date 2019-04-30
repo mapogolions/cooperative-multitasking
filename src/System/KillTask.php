@@ -12,14 +12,14 @@ final class KillTask extends SystemCall
         $this->tid = $tid;
     }
 
-    public function handle(Task $task, Scheduler $scheduler): void
+    public function handle(Task $task, Scheduler $scheduler)
     {
-        $killedTask = $scheduler->tasksPool()[$this->tid];
+        $killedTask = $scheduler->pool()[$this->tid];
         if (isset($killedTask)) {
-            $task->setValue(true);
-            $killedTask->setValue(new StopIteration());
+            $task->update(true);
+            $killedTask->update(new StopIteration());
         } else {
-            $task->setValue(false);
+            $task->update(false);
         }
         $scheduler->schedule($task);
     }

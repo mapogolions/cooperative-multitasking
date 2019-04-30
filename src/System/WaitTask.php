@@ -13,10 +13,10 @@ final class WaitTask extends SystemCall
         $this->tid = $tid;
     }
 
-    public function handle(Task $defferedTask, Scheduler $scheduler): void
+    public function handle(Task $defferedTask, Scheduler $scheduler)
     {
         $status = $scheduler->waitForExit($defferedTask, $this->tid);
-        $defferedTask->setValue($status);
+        $defferedTask->update($status);
         if (!$status) {
             $scheduler->schedule($defferedTask);
         }

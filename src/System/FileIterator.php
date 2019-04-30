@@ -29,9 +29,9 @@ final class FileIterator extends SystemCall
         return true;
     }
 
-    public function handle(Task $task, Scheduler $scheduler): void
+    public function handle(Task $task, Scheduler $scheduler)
     {
-        $task->setValue($this->readable());
+        $task->update($this->readable());
         $scheduler->schedule($task);
     }
 

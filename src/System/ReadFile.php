@@ -34,10 +34,10 @@ final class ReadFile extends SystemCall
         }
     }
 
-    public function handle(Task $task, Scheduler $scheduler): void
+    public function handle(Task $task, Scheduler $scheduler)
     {
         $scheduler->spawn($this->readable());
-        $task->setValue(count($scheduler->tasksPool()));
+        $task->update(count($scheduler->pool()));
         $scheduler->schedule($task);
     }
 
