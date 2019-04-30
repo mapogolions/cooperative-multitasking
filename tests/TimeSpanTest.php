@@ -9,23 +9,23 @@ use Mapogolions\Multitask\System\SystemCall;
 
 class TimeSpanTest extends TestCase
 {
-  public function testExecutionFlowDelayForAWhile()
-  {
-    $suspendable = (function () {
-      yield "start";
-      yield new TimeSpan(0.1);
-      yield "end";
-    })();
-    $spy = new Storage();
-    Scheduler::create()
-      ->spawn(new DataProducer($suspendable, $spy))
-      ->launch();
+    public function testExecutionFlowDelayForAWhile()
+    {
+        $suspendable = (function () {
+            yield "start";
+            yield new TimeSpan(0.1);
+            yield "end";
+        })();
+        $spy = new Storage();
+        Scheduler::create()
+            ->spawn(new DataProducer($suspendable, $spy))
+            ->launch();
 
-    $this->assertEquals(
-      ["start", "<system call> TimeSpan(0.1)", "end"],
-      array_map(function ($it) {
-        return $it instanceof SystemCall ? (string) $it : $it;
-      }, $spy->stock())
-    );
-  }
+        $this->assertEquals(
+            ["start", "<system call> TimeSpan(0.1)", "end"],
+            array_map(function ($it) {
+                return $it instanceof SystemCall ? (string) $it : $it;
+            }, $spy->stock())
+        );
+    }
 }

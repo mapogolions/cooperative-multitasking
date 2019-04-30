@@ -6,35 +6,35 @@ use Mapogolions\Multitask\Spies\Storage;
 
 class SchedulerTest extends TestCase
 {
-  public function testSchedulerInitialState()
-  {
-    $pl = new Scheduler();
-    $pl
-      ->spawn(Utils::countdown(10))
-      ->spawn(Utils::countup(10));
+    public function testSchedulerInitialState()
+    {
+        $pl = new Scheduler();
+        $pl
+            ->spawn(Utils::countdown(10))
+            ->spawn(Utils::countup(10));
 
-    $this->assertSame(2, count($pl->tasksPool()));
-    $this->assertSame(0, count($pl->defferedTasksPool()));
-  }
+        $this->assertSame(2, count($pl->tasksPool()));
+        $this->assertSame(0, count($pl->defferedTasksPool()));
+    }
 
-  public function testCountupToUpperBound()
-  {
-    $spy = new Storage();
-    Scheduler::create()
-      ->spawn(new DataProducer(Utils::countup(8), $spy))
-      ->launch();
+    public function testCountupToUpperBound()
+    {
+        $spy = new Storage();
+        Scheduler::create()
+            ->spawn(new DataProducer(Utils::countup(8), $spy))
+            ->launch();
 
-    $this->assertEquals([1, 2, 3, 4, 5, 6, 7, 8], $spy->stock());
-  }
+        $this->assertEquals([1, 2, 3, 4, 5, 6, 7, 8], $spy->stock());
+    }
 
-  public function testConcurrentExecutionOfTwoTasks()
-  {
-    $spy = new Storage();
-    Scheduler::create()
-      ->spawn(new DataProducer(Utils::countup(3), $spy))
-      ->spawn(new DataProducer(Utils::countdown(6), $spy))
-      ->launch();
+    public function testConcurrentExecutionOfTwoTasks()
+    {
+        $spy = new Storage();
+        Scheduler::create()
+            ->spawn(new DataProducer(Utils::countup(3), $spy))
+            ->spawn(new DataProducer(Utils::countdown(6), $spy))
+            ->launch();
 
-    $this->assertEquals([1, 6, 2, 5, 3, 4, 3, 2, 1], $spy->stock());
-  }
+        $this->assertEquals([1, 6, 2, 5, 3, 4, 3, 2, 1], $spy->stock());
+    }
 }

@@ -5,54 +5,54 @@ use Mapogolions\Multitask\Suspendable\SuspendablePartInterface;
 
 class DataProducer implements SuspendablePartInterface
 {
-  private $store = [];
-  private $suspendable;
-  private $spy;
+    private $store = [];
+    private $suspendable;
+    private $spy;
 
-  public function __construct(\Generator $suspendable, $spy=null)
-  {
-    $this->suspendable = $suspendable;
-    $this->spy = $spy;
-  }
-
-  public function yields(): \Iterator
-  {
-    return new \ArrayIterator($this->store);
-  }
-
-  public function next()
-  {
-    return $this->suspendable->next();
-  }
-
-  public function current()
-  {
-    $data = $this->suspendable->current();
-    $this->store[] = $data;
-    if (isset($this->spy)) {
-      $spy = $this->spy;
-      $spy($data);
+    public function __construct(\Generator $suspendable, $spy=null)
+    {
+        $this->suspendable = $suspendable;
+        $this->spy = $spy;
     }
-    return $data;
-  }
 
-  public function valid()
-  {
-    return $this->suspendable->valid();
-  }
+    public function yields(): \Iterator
+    {
+        return new \ArrayIterator($this->store);
+    }
 
-  public function send($data)
-  {
-    return $this->suspendable->send($data);
-  }
+    public function next()
+    {
+        return $this->suspendable->next();
+    }
 
-  public function key()
-  {
-    return $this->suspendable->key();
-  }
+    public function current()
+    {
+        $data = $this->suspendable->current();
+        $this->store[] = $data;
+        if (isset($this->spy)) {
+            $spy = $this->spy;
+            $spy($data);
+        }
+        return $data;
+    }
 
-  public function rewind()
-  {
-    return $this->suspendable->rewind();
-  }
+    public function valid()
+    {
+        return $this->suspendable->valid();
+    }
+
+    public function send($data)
+    {
+        return $this->suspendable->send($data);
+    }
+
+    public function key()
+    {
+        return $this->suspendable->key();
+    }
+
+    public function rewind()
+    {
+        return $this->suspendable->rewind();
+    }
 }

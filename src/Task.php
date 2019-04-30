@@ -1,47 +1,48 @@
 <?php
+
 namespace Mapogolions\Multitask;
 
 class Task
 {
-  private $id;
-  private $suspendable;
-  private $value = null;
-  private $untracked = true;
+    private $id;
+    private $suspendable;
+    private $value = null;
+    private $untracked = true;
 
-  public function __construct($id, $suspendable)
-  {
-    $this->id = $id;
-    $this->suspendable = $suspendable;
-  }
-
-  public function tid()
-  {
-    return $this->id;
-  }
-
-  public function getValue()
-  {
-    return $this->value;
-  }
-
-  public function setValue($value)
-  {
-    $this->value = $value;
-  }
-
-  public function run()
-  {
-    if ($this->untracked) {
-      $this->untracked = false;
-      return $this->suspendable->current();
+    public function __construct($id, $suspendable)
+    {
+        $this->id = $id;
+        $this->suspendable = $suspendable;
     }
-    if ($this->value instanceof StopIteration) {
-      throw new StopIteration();
+
+    public function tid()
+    {
+        return $this->id;
     }
-    $this->suspendable->send($this->value);
-    if (!$this->suspendable->valid()) {
-      throw new StopIteration();
+
+    public function getValue()
+    {
+        return $this->value;
     }
-    return $this->suspendable->current();
-  }
+
+    public function setValue($value)
+    {
+        $this->value = $value;
+    }
+
+    public function run()
+    {
+        if ($this->untracked) {
+            $this->untracked = false;
+            return $this->suspendable->current();
+        }
+        if ($this->value instanceof StopIteration) {
+            throw new StopIteration();
+        }
+        $this->suspendable->send($this->value);
+        if (!$this->suspendable->valid()) {
+            throw new StopIteration();
+        }
+        return $this->suspendable->current();
+    }
 }

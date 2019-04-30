@@ -7,26 +7,26 @@ use Mapogolions\Multitask\Suspendable\DataProducer;
 
 class KillTaskTest extends TestCase
 {
-  public function testKillInfiniteLoopAfterTwoIterations()
-  {
-    $spy = new Storage();
-    $suspendable = (function () use ($spy) {
-      $tid = yield new GetTid();
-      $childTid = yield new NewTask(new DataProducer(Utils::infiniteLoop(), $spy));
-      for ($i = 0; $i < 2; $i++) {
-        yield $tid;
-      }
-      yield new KillTask($childTid);
-    })();
-    Scheduler::create()
-      ->spawn(new DataProducer($suspendable, $spy))
-      ->launch();
+    public function testKillInfiniteLoopAfterTwoIterations()
+    {
+        $spy = new Storage();
+        $suspendable = (function () use ($spy) {
+            $tid = yield new GetTid();
+            $childTid = yield new NewTask(new DataProducer(Utils::infiniteLoop(), $spy));
+            for ($i = 0; $i < 2; $i++) {
+                yield $tid;
+            }
+            yield new KillTask($childTid);
+        })();
+        Scheduler::create()
+            ->spawn(new DataProducer($suspendable, $spy))
+            ->launch();
 
-    $this->assertEquals(
-      ["<system call> GetTid", "<system call> NewTask", "<system call> GetTid", 1, 2, 1, 2, "<system call> KillTask"],
-      array_map(function ($it) {
-        return $it instanceof SystemCall ? (string) $it : $it;
-      }, $spy->stock())
-    );
-  }
+        $this->assertEquals(
+            ["<system call> GetTid", "<system call> NewTask", "<system call> GetTid", 1, 2, 1, 2, "<system call> KillTask"],
+            array_map(function ($it) {
+                return $it instanceof SystemCall ? (string) $it : $it;
+            }, $spy->stock())
+        );
+    }
 }

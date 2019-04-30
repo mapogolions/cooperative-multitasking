@@ -10,100 +10,100 @@ use Mapogolions\Multitask\System\{ SystemCall, FileIterator };
 
 class FileIteratorTest extends TestCase
 {
-  private $source;
-  private $spy;
-  private $descriptor;
+    private $source;
+    private $spy;
+    private $descriptor;
 
-  public function setUp(): void
-  {
-    $this->source = vfsStream::newFile("tmp.txt")
-      ->at(vfsStream::setup("home"))
-      ->setContent(1 . PHP_EOL . 2 . PHP_EOL);
-    $this->spy = new Storage();
-    $this->descriptor = \fopen($this->source->url(), "r");
-  }
-
-  public function tearDown(): void
-  {
-    if (is_resource($this->descriptor)) {
-      \fclose($this->descriptor);
+    public function setUp(): void
+    {
+        $this->source = vfsStream::newFile("tmp.txt")
+            ->at(vfsStream::setup("home"))
+            ->setContent(1 . PHP_EOL . 2 . PHP_EOL);
+        $this->spy = new Storage();
+        $this->descriptor = \fopen($this->source->url(), "r");
     }
-  }
 
-  private function flushedStream($descriptor)
-  {
-    $stream = yield new FileIterator($descriptor);
-    yield from $stream;
-  }
+    public function tearDown(): void
+    {
+        if (is_resource($this->descriptor)) {
+            \fclose($this->descriptor);
+        }
+    }
 
-  private function notFlushedStream($descriptor)
-  {
-    $stream = yield new FileIterator($descriptor);
-  }
+    private function flushedStream($descriptor)
+    {
+        $stream = yield new FileIterator($descriptor);
+        yield from $stream;
+    }
 
-  public function testNotFlushedStreamCanBeClosed()
-  {
-    Scheduler::create()
-      ->spawn($this->notFlushedStream($this->descriptor))
-      ->launch();
+    private function notFlushedStream($descriptor)
+    {
+        $stream = yield new FileIterator($descriptor);
+    }
 
-    $this->assertTrue(\fclose($this->descriptor));
-  }
+    public function testNotFlushedStreamCanBeClosed()
+    {
+        Scheduler::create()
+            ->spawn($this->notFlushedStream($this->descriptor))
+            ->launch();
 
-  public function testFlushedStreamCanNotBeClosed()
-  {
-    $this->expectException(Error::class);
+        $this->assertTrue(\fclose($this->descriptor));
+    }
 
-    Scheduler::create()
-      ->spawn($this->flushedStream($this->descriptor))
-      ->launch();
+    public function testFlushedStreamCanNotBeClosed()
+    {
+        $this->expectException(Error::class);
 
-    \fclose($this->descriptor);
-  }
+        Scheduler::create()
+            ->spawn($this->flushedStream($this->descriptor))
+            ->launch();
 
-  public function testNotFlushedStreamDoesNotAchiveEndOfFile()
-  {
-    Scheduler::create()
-      ->spawn($this->notFlushedStream($this->descriptor))
-      ->launch();
+        \fclose($this->descriptor);
+    }
 
-    $this->assertFalse($this->source->eof());
-  }
+    public function testNotFlushedStreamDoesNotAchiveEndOfFile()
+    {
+        Scheduler::create()
+            ->spawn($this->notFlushedStream($this->descriptor))
+            ->launch();
 
-  public function testFlushedStreamAchivesTheEndOfTheFile()
-  {
-    Scheduler::create()
-      ->spawn($this->flushedStream($this->descriptor))
-      ->launch();
+        $this->assertFalse($this->source->eof());
+    }
 
-    $this->assertTrue($this->source->eof());
-  }
+    public function testFlushedStreamAchivesTheEndOfTheFile()
+    {
+        Scheduler::create()
+            ->spawn($this->flushedStream($this->descriptor))
+            ->launch();
 
-  public function testNotFlushedStreamEmitsNothing()
-  {
-    Scheduler::create()
-      ->spawn(new DataProducer($this->notFlushedStream($this->descriptor), $this->spy))
-      ->launch();
+        $this->assertTrue($this->source->eof());
+    }
 
-    $this->assertEquals(
-      ["<system call> FileIterator"],
-      array_map(function ($it) {
-        return $it instanceof SystemCall ? (string) $it : $it;
-      }, $this->spy->stock())
-    );
-  }
+    public function testNotFlushedStreamEmitsNothing()
+    {
+        Scheduler::create()
+            ->spawn(new DataProducer($this->notFlushedStream($this->descriptor), $this->spy))
+            ->launch();
 
-  public function testFlushedStreamEmitsTheEntireContentsOfTheFile()
-  {
-    Scheduler::create()
-      ->spawn(new DataProducer($this->flushedStream($this->descriptor), $this->spy))
-      ->launch();
+        $this->assertEquals(
+            ["<system call> FileIterator"],
+            array_map(function ($it) {
+                return $it instanceof SystemCall ? (string) $it : $it;
+            }, $this->spy->stock())
+        );
+    }
 
-    $this->assertEquals(
-      ["<system call> FileIterator", 1 . PHP_EOL, 2 . PHP_EOL],
-      array_map(function ($it) {
-        return $it instanceof SystemCall ? (string) $it : $it;
-      }, $this->spy->stock())
-    );
-  }
+    public function testFlushedStreamEmitsTheEntireContentsOfTheFile()
+    {
+        Scheduler::create()
+            ->spawn(new DataProducer($this->flushedStream($this->descriptor), $this->spy))
+            ->launch();
+
+        $this->assertEquals(
+            ["<system call> FileIterator", 1 . PHP_EOL, 2 . PHP_EOL],
+            array_map(function ($it) {
+                return $it instanceof SystemCall ? (string) $it : $it;
+            }, $this->spy->stock())
+        );
+    }
 }
