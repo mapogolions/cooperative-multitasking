@@ -1,24 +1,24 @@
-### Task management system
+## Task management system
 
-1) based on generators/coroutines
-2) only one thread
-3) cooperative multitasking
+
+
+### Key points to keep in mind
+
+* likewise 1 Core CPU [Flynn's taxonomy](https://en.wikipedia.org/wiki/Flynn%27s_taxonomy)
+* single thread
+* event loop
+* tasks are generators/coroutines
+* cooperative multitasking
+
+### Definitions
 
 __Cooperative multitasking__ - tasks yield to scheduler.
+
 __Preemptive multitasking__ - scheduler interrupts tasks.
 
-An insight:
-
-* `yield` statement is a kind of *trap*
-
-* when generator function hits a `yield` statement, it immediatly suspends execution
-
-* control is passed back to whatever code make the generator function run (unseen) 
-
-* if you treat yield as a trap, you can build a multitasking "operating system" -- all in PHP!
 
 
-#### How to use
+### How to use
 
 ```sh
 > git clone ...
@@ -32,3 +32,8 @@ then copy any snippet (snippets directory) and paste to the `App.php` file.
 ```sh
 > php -f App.php
 ```
+
+### Further information
+
+* [A Curious Course on Coroutines and Concurrency](http://dabeaz.com/coroutines/)
+* [Miguel Grinberg Asynchronous Python for the Complete Beginner PyCon 2017](https://www.youtube.com/watch?v=iG6fr81xHKA)
