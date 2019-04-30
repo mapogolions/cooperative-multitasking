@@ -1,4 +1,4 @@
 <?php
 namespace Mapogolions\Multitask;
 
-class StopIteration extends \Exception {}
+final class StopIteration extends \Exception {}

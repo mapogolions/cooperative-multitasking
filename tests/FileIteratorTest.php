@@ -5,7 +5,7 @@ use PHPUnit\Framework\Error\Error;
 use org\bovigo\vfs\vfsStream;
 use Mapogolions\Multitask\Scheduler;
 use Mapogolions\Multitask\Suspendable\DataProducer;
-use Mapogolions\Multitask\Spies\Storage;
+use Mapogolions\Multitask\Spies\SpyCalls;
 use Mapogolions\Multitask\System\{ SystemCall, FileIterator };
 
 class FileIteratorTest extends TestCase
@@ -19,7 +19,7 @@ class FileIteratorTest extends TestCase
         $this->source = vfsStream::newFile("tmp.txt")
             ->at(vfsStream::setup("home"))
             ->setContent(1 . PHP_EOL . 2 . PHP_EOL);
-        $this->spy = new Storage();
+        $this->spy = new SpyCalls();
         $this->descriptor = \fopen($this->source->url(), "r");
     }
 
@@ -89,7 +89,7 @@ class FileIteratorTest extends TestCase
             ["<system call> FileIterator"],
             array_map(function ($it) {
                 return $it instanceof SystemCall ? (string) $it : $it;
-            }, $this->spy->stock())
+            }, $this->spy->calls())
         );
     }
 
@@ -103,7 +103,7 @@ class FileIteratorTest extends TestCase
             ["<system call> FileIterator", 1 . PHP_EOL, 2 . PHP_EOL],
             array_map(function ($it) {
                 return $it instanceof SystemCall ? (string) $it : $it;
-            }, $this->spy->stock())
+            }, $this->spy->calls())
         );
     }
 }

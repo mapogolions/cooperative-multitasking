@@ -4,7 +4,7 @@ use PHPUnit\Framework\TestCase;
 use Mapogolions\Multitask\Scheduler;
 use Mapogolions\Multitask\Suspendable\DataProducer;
 use Mapogolions\Multitask\System\TimeSpan;
-use Mapogolions\Multitask\Spies\Storage;
+use Mapogolions\Multitask\Spies\SpyCalls;
 use Mapogolions\Multitask\System\SystemCall;
 
 class TimeSpanTest extends TestCase
@@ -16,7 +16,7 @@ class TimeSpanTest extends TestCase
             yield new TimeSpan(0.1);
             yield "end";
         })();
-        $spy = new Storage();
+        $spy = new SpyCalls();
         Scheduler::create()
             ->spawn(new DataProducer($suspendable, $spy))
             ->launch();
@@ -25,7 +25,7 @@ class TimeSpanTest extends TestCase
             ["start", "<system call> TimeSpan(0.1)", "end"],
             array_map(function ($it) {
                 return $it instanceof SystemCall ? (string) $it : $it;
-            }, $spy->stock())
+            }, $spy->calls())
         );
     }
 }

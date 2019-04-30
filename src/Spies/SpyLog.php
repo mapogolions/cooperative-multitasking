@@ -3,7 +3,7 @@ namespace Mapogolions\Multitask\Spies;
 
 use Mapogolions\Multitask\Spies\SpyInterface;
 
-final class Debug implements SpyInterface
+final class SpyLog implements SpyInterface
 {
     private $out;
 

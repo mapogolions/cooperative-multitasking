@@ -5,17 +5,14 @@ use Mapogolions\Multitask\System\SystemCall;
 
 class Scheduler
 {
-    private $_taskCount;
-    private $ready;
+    private $taskCount = 0;
+    private $ready = [];
     private $tasks;
-    private $defferedTasks;
+    private $defferedTasks = [];
 
     public function __construct()
     {
-        $this->_taskCount = 0;
         $this->ready = new \SplQueue();
-        $this->tasks = [];
-        $this->defferedTasks = [];
     }
 
     public static function create()
@@ -40,7 +37,7 @@ class Scheduler
 
     public function spawn($suspendable)
     {
-        $task = new Task(++$this->_taskCount, $suspendable);
+        $task = new Task(++$this->taskCount, $suspendable);
         $this->tasks[$task->tid()] = $task;
         $this->schedule($task);
         return $this;
@@ -59,7 +56,7 @@ class Scheduler
             $this->schedule($defferedTask);
         }
         unset($this->defferedTasks[$task->tid()]);
-        return --$this->_taskCount;
+        return --$this->taskCount;
     }
 
     public function waitForExit(Task $defferedTask, int $tid)

@@ -2,14 +2,14 @@
 use PHPUnit\Framework\TestCase;
 use Mapogolions\Multitask\{ Scheduler, Utils };
 use Mapogolions\Multitask\System\{ SystemCall, GetTid, NewTask, KillTask };
-use Mapogolions\Multitask\Spies\Storage;
+use Mapogolions\Multitask\Spies\SpyCalls;
 use Mapogolions\Multitask\Suspendable\DataProducer;
 
 class KillTaskTest extends TestCase
 {
     public function testKillInfiniteLoopAfterTwoIterations()
     {
-        $spy = new Storage();
+        $spy = new SpyCalls();
         $suspendable = (function () use ($spy) {
             $tid = yield new GetTid();
             $childTid = yield new NewTask(new DataProducer(Utils::infiniteLoop(), $spy));
@@ -26,7 +26,7 @@ class KillTaskTest extends TestCase
             ["<system call> GetTid", "<system call> NewTask", "<system call> GetTid", 1, 2, 1, 2, "<system call> KillTask"],
             array_map(function ($it) {
                 return $it instanceof SystemCall ? (string) $it : $it;
-            }, $spy->stock())
+            }, $spy->calls())
         );
     }
 }
