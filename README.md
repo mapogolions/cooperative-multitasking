@@ -1,6 +1,6 @@
 ## Task management system
 
-
+[![Build Status](https://travis-ci.org/mapogolions/cooperative-multitasking.svg?branch=master)](https://travis-ci.org/mapogolions/cooperative-multitasking)
 
 ### Key points to keep in mind
 
